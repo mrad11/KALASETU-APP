@@ -18,13 +18,7 @@ An interactive application demonstrating voice-first craft onboarding, fair-pric
   - **iPhone (Safari):** Tap the Share button → **Add to Home Screen**.
   - KalaSetu AI will be installed directly to your phone's home screen with offline caching and voice audio support!
 
-### 3. 🌐 ## 🌐 Live Web App & Installation
 
-- **Live Application:** [https://mrad11.github.io/kalasetu-ai/](https://mrad11.github.io/kalasetu-ai/)
-- **Android Phone:** Open the live link in Google Chrome → Tap menu (⋮) → **Install app**.
-- **iPhone / iPad:** Open the live link in Safari → Tap Share → **Add to Home Screen**.
-- **Windows / Mac:** Click the **Install** (⊕) icon in your browser address bar.
----
 
 ## ✨ Features Included
 
