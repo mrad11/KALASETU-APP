@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connect Phone to KalaSetu AI</title>
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <link rel="shortcut icon" href="kalasetu-icon.ico" />
+  <style>
+    :root {
+      --ink: #26312e;
+      --muted: #69746f;
+      --paper: #f8f5ee;
+      --canvas: #f0ede5;
+      --card: #ffffff;
+      --line: #e5e1d8;
+      --moss: #1f5d4e;
+      --moss-dark: #17493e;
+      --mint: #def0e6;
+      --sand: #f5ead4;
+      --terracotta: #bb5b3f;
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 30px 16px;
+      font: 14px/1.5 Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--canvas);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 12px 40px rgba(31, 93, 78, 0.08);
+      max-width: 540px;
+      width: 100%;
+      padding: 32px 28px;
+      text-align: center;
+    }
+    .brand-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+    }
+    h1 {
+      font-size: 22px;
+      margin: 0;
+      color: var(--moss);
+      letter-spacing: -0.03em;
+    }
+    p.sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 6px 0 22px;
+    }
+    .qr-wrapper {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 16px;
+      display: inline-block;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+      border: 1px solid var(--line);
+      margin-bottom: 18px;
+    }
+    #qrcode img {
+      margin: auto;
+      display: block;
+    }
+    .url-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 12px;
+      max-width: 420px;
+      margin: 0 auto 24px;
+    }
+    .url-text {
+      flex: 1;
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--moss);
+      word-break: break-all;
+      text-align: left;
+    }
+    .copy-btn {
+      background: var(--moss);
+      color: #fff;
+      border: 0;
+      border-radius: 7px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .copy-btn:hover { background: var(--moss-dark); }
+    .instructions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      text-align: left;
+      margin-top: 20px;
+    }
+    @media (max-width: 480px) {
+      .instructions { grid-template-columns: 1fr; }
+    }
+    .instruction-card {
+      background: #fbfdfb;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .instruction-card strong {
+      display: block;
+      color: var(--moss);
+      font-size: 12.5px;
+      margin-bottom: 6px;
+    }
+    .instruction-card ol {
+      margin: 0;
+      padding-left: 16px;
+      font-size: 11.5px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .instruction-card li { margin-bottom: 4px; }
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 24px;
+    }
+    .btn {
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary {
+      background: var(--moss);
+      color: #fff;
+      border: 0;
+    }
+    .btn-primary:hover { background: var(--moss-dark); }
+    .btn-secondary {
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--ink);
+    }
+    .btn-secondary:hover { background: #fafafa; }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(50px);
+      background: #243c35;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 99px;
+      font-size: 12px;
+      opacity: 0;
+      transition: .25s ease;
+      pointer-events: none;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+  <script src="qrcode.min.js"></script>
+</head>
+<body>
+  <div class="card">
+    <div class="brand-header">
+      <img src="icon-192.png" alt="KalaSetu Logo" class="brand-logo" />
+      <div>
+        <h1>KalaSetu AI</h1>
+        <div style="font-size: 11px; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase;">Install on Phone & Desktop</div>
+      </div>
+    </div>
+
+    <p class="sub">Scan this QR code with your phone camera to open and install KalaSetu instantly over local Wi-Fi.</p>
+
+    <div class="qr-wrapper">
+      <div id="qrcode"></div>
+    </div>
+
+    <div class="url-box">
+      <span class="url-text" id="target-url">Loading...</span>
+      <button class="copy-btn" id="copy-btn" type="button">Copy link</button>
+    </div>
+
+    <div class="instructions">
+      <div class="instruction-card">
+        <strong>📱 Android Phone</strong>
+        <ol>
+          <li>Open link in <b>Chrome</b></li>
+          <li>Tap the three dots (<b>⋮</b>) menu</li>
+          <li>Tap <b>Install app</b> or <b>Add to Home Screen</b></li>
+        </ol>
+      </div>
+      <div class="instruction-card">
+        <strong>🍏 Apple iPhone / iPad</strong>
+        <ol>
+          <li>Open link in <b>Safari</b></li>
+          <li>Tap the <b>Share</b> button (⎋)</li>
+          <li>Tap <b>Add to Home Screen</b></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <a href="./index.html" class="btn btn-primary">Open KalaSetu in Browser</a>
+      <button class="btn btn-secondary" id="open-standalone-btn" type="button">Launch Desktop App Window</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Link copied to clipboard!</div>
+
+  <script>
+    // Discover the URL from window location or query param
+    const urlParams = new URLSearchParams(window.location.search);
+    const hostIp = urlParams.get('ip') || window.location.hostname;
+    const port = window.location.port ? ':' + window.location.port : '';
+    const phoneUrl = window.location.protocol + '//' + hostIp + port + '/index.html';
+
+    document.getElementById('target-url').textContent = phoneUrl;
+
+    // Render QR Code
+    new QRCode(document.getElementById("qrcode"), {
+      text: phoneUrl,
+      width: 200,
+      height: 200,
+      colorDark : "#1f5d4e",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.M
+    });
+
+    // Copy button
+    document.getElementById('copy-btn').addEventListener('click', () => {
+      navigator.clipboard.writeText(phoneUrl).then(() => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2200);
+      });
+    });
+
+    // Standalone desktop launcher button
+    document.getElementById('open-standalone-btn').addEventListener('click', () => {
+      window.open('./index.html', 'KalaSetuApp', 'width=1280,height=820,menubar=no,toolbar=no,location=no,status=no');
+    });
+  </script>
+</body>
+</html>

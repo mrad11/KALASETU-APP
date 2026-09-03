@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1f5d4e" />
+  <meta name="application-name" content="KalaSetu AI" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="KalaSetu AI" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <link rel="icon" type="image/svg+xml" href="kalasetu-icon.svg" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="shortcut icon" href="kalasetu-icon.ico" />
+  <title>KalaSetu — Smart cataloging for Indian craft</title>
+  <style>
+    :root {
+      --ink: #26312e;
+      --muted: #69746f;
+      --paper: #f8f5ee;
+      --canvas: #f0ede5;
+      --card: #ffffff;
+      --line: #e5e1d8;
+      --moss: #1f5d4e;
+      --moss-dark: #17493e;
+      --mint: #def0e6;
+      --sand: #f5ead4;
+      --terracotta: #bb5b3f;
+      --saffron: #e6a742;
+      --shadow: 0 10px 30px rgba(42, 50, 47, .08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { min-width: 320px; background: var(--canvas); }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--canvas);
+      font: 14px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: -.01em;
+    }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .app-shell { min-height: 100vh; display: grid; grid-template-columns: 236px minmax(0, 1fr); }
+
+    .sidebar {
+      background: #1d302c;
+      color: #eaf1ec;
+      padding: 26px 16px 18px;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .brand { display: flex; gap: 10px; align-items: center; padding: 0 8px; color: #fff; }
+    .brand-mark { width: 31px; height: 31px; border: 1px solid rgba(255,255,255,.55); border-radius: 50% 50% 44% 50%; display:grid; place-items:center; transform: rotate(-20deg); font-size: 15px; color: #f5cc80; }
+    .brand-name { font-size: 20px; font-weight: 650; letter-spacing: -.05em; }
+    .brand-name small { display:block; color:#b1c7bd; font-size:9px; letter-spacing:.17em; text-transform:uppercase; margin-top:-2px; }
+    .workspace { margin: 33px 8px 13px; color:#9db3a9; text-transform:uppercase; letter-spacing:.13em; font-size:10px; font-weight:700; }
+    .nav { display:grid; gap:5px; }
+    .nav button { border:0; background:transparent; color:#c9d6cf; border-radius:10px; text-align:left; padding:10px 12px; font-weight:500; display:flex; align-items:center; gap:11px; }
+    .nav button .nav-icon { width:18px; text-align:center; color:#a7beb4; font-size:16px; }
+    .nav button:hover { background:rgba(255,255,255,.06); color:#fff; }
+    .nav button.active { background:#315b50; color:#fff; box-shadow: inset 3px 0 0 #f0bd61; }
+    .nav button.active .nav-icon { color:#f8cd79; }
+    .side-spacer { flex: 1; }
+    .help-card { padding:13px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.09); border-radius:14px; color:#d6e2db; margin: 12px 0; }
+    .help-card strong { color:#fff; display:block; font-size:12px; }
+    .help-card span { display:block; font-size:11px; line-height:1.35; margin:4px 0 9px; color:#aec1b7; }
+    .help-card button { border:0; color:#1d302c; background:#f4c66e; padding:7px 9px; border-radius:7px; font-weight:700; font-size:11px; }
+    .profile { border-top:1px solid rgba(255,255,255,.12); padding:15px 8px 2px; display:flex; gap:9px; align-items:center; }
+    .avatar { width:31px; height:31px; border-radius:50%; background:linear-gradient(135deg,#efc477,#ad553e); color:#fff; display:grid; place-items:center; font-weight:700; font-size:11px; }
+    .profile strong { font-size:12px; display:block; }
+    .profile small { font-size:10px; color:#a6bbb0; display:block; margin-top:1px; }
+
+    main { min-width:0; padding: 25px clamp(18px, 3vw, 46px) 44px; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:28px; }
+    .crumb { color:var(--muted); font-size:12px; }
+    .crumb strong { color:var(--ink); font-weight:650; }
+    .top-actions { display:flex; align-items:center; gap:10px; }
+    .icon-btn { border:1px solid var(--line); width:36px; height:36px; border-radius:10px; background:var(--card); color:var(--ink); font-size:17px; position:relative; }
+    .notification { position:absolute; width:7px; height:7px; border-radius:50%; background:var(--terracotta); border:1px solid #fff; top:8px; right:8px; }
+    .language { border:0; color:var(--muted); background:transparent; font-size:12px; }
+    .view { display:none; animation: enter .35s ease both; }
+    .view.active { display:block; }
+    @keyframes enter { from { opacity:0; transform:translateY(7px); } to { opacity:1; transform:translateY(0); } }
+    h1 { font-size:clamp(27px,3vw,38px); line-height:1.08; letter-spacing:-.055em; margin:0; font-weight:670; }
+    h2 { font-size:18px; letter-spacing:-.035em; margin:0; }
+    h3 { font-size:14px; margin:0; letter-spacing:-.02em; }
+    .intro { color:var(--muted); margin:8px 0 0; }
+    .primary-btn { border:0; border-radius:10px; background:var(--moss); color:#fff; padding:11px 15px; font-weight:650; box-shadow:0 4px 12px rgba(31,93,78,.18); }
+    .primary-btn:hover { background:var(--moss-dark); }
+    .secondary-btn { border:1px solid var(--line); border-radius:10px; background:#fff; color:var(--ink); padding:10px 13px; font-weight:600; }
+    .secondary-btn:hover { border-color:#b6c7c0; background:#fbfdfb; }
+    .page-head { display:flex; justify-content:space-between; gap:20px; align-items:flex-end; margin-bottom:25px; }
+    .page-head .actions { display:flex; gap:9px; flex-wrap:wrap; }
+
+    .metrics { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; margin: 24px 0 28px; }
+    .metric { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:17px 18px; box-shadow:0 2px 6px rgba(38,49,46,.025); }
+    .metric-label { color:var(--muted); font-size:11px; font-weight:600; }
+    .metric-data { display:flex; align-items:baseline; gap:8px; margin:7px 0 4px; }
+    .metric-data strong { font-size:27px; letter-spacing:-.055em; }
+    .metric-data span { color:var(--moss); font-size:11px; font-weight:700; }
+    .metric-caption { color:var(--muted); font-size:11px; }
+    .content-grid { display:grid; grid-template-columns:minmax(0,1.52fr) minmax(278px,.82fr); gap:19px; align-items:start; }
+    .panel { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:19px; box-shadow:0 2px 6px rgba(38,49,46,.025); }
+    .panel-head { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:16px; }
+    .panel-sub { color:var(--muted); font-size:11px; margin-top:3px; }
+    .text-button { color:var(--moss); background:transparent; border:0; padding:2px; font-weight:650; font-size:12px; }
+    .text-button:hover { text-decoration:underline; }
+
+    .product-list { display:grid; gap:3px; }
+    .product-row { border:0; background:transparent; text-align:left; border-radius:12px; padding:8px; display:grid; grid-template-columns:54px minmax(0,1fr) auto; gap:12px; align-items:center; color:var(--ink); width:100%; }
+    .product-row:hover, .product-row.selected { background:#f6f8f4; }
+    .product-row.selected { outline:1px solid #d5e7de; }
+    .art { position:relative; overflow:hidden; width:54px; height:54px; border-radius:10px; background:#d6aa72; }
+    .art::after { content:""; position:absolute; inset:0; opacity:.75; }
+    .art.weave { background:linear-gradient(135deg,#b44c36,#e6ba79 46%,#1f5d4e); }
+    .art.weave::after { background:repeating-linear-gradient(55deg,transparent 0 5px,rgba(255,248,221,.72) 5px 6px,transparent 6px 11px); }
+    .art.dhokra { background:linear-gradient(135deg,#493c30,#d7a955 54%,#765a31); }
+    .art.dhokra::after { background:radial-gradient(circle at 35% 32%,#f2d384 0 5%,transparent 6%),radial-gradient(circle at 63% 55%,#865f24 0 9%,transparent 10%),repeating-linear-gradient(110deg,transparent 0 5px,rgba(255,235,165,.32) 6px 7px); }
+    .art.ceramic { background:linear-gradient(145deg,#c25f3f 0 50%,#f0c97b 50%); }
+    .art.ceramic::after { background:radial-gradient(ellipse at 50% 76%,#7b332a 0 18%,transparent 19%),radial-gradient(circle at 27% 28%,#ffe5a7 0 5%,transparent 6%),radial-gradient(circle at 72% 25%,#ffe5a7 0 5%,transparent 6%); }
+    .product-name { font-weight:650; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .product-meta { color:var(--muted); font-size:11px; margin-top:2px; }
+    .row-status { font-size:10px; padding:4px 7px; border-radius:99px; color:var(--moss); background:var(--mint); font-weight:700; white-space:nowrap; }
+    .row-status.draft { color:#967136; background:#fff3d7; }
+    .match-box { background:linear-gradient(135deg,#e2f0e6,#f6f3e8); border-radius:14px; padding:15px; margin-top:17px; }
+    .match-box .eyebrow { font-size:10px; color:var(--moss); font-weight:750; letter-spacing:.1em; text-transform:uppercase; }
+    .match-box strong { display:block; font-size:15px; margin:5px 0 4px; letter-spacing:-.025em; }
+    .match-box p { margin:0; color:#577168; font-size:12px; }
+    .match-score { display:flex; gap:10px; align-items:center; margin-top:12px; }
+    .score-circle { background:var(--moss); color:#fff; width:40px; height:40px; border-radius:50%; display:grid; place-items:center; font-weight:700; font-size:12px; }
+    .match-score span { font-size:11px; color:#527168; }
+
+    .task-list { display:grid; gap:2px; }
+    .task { padding:10px 4px; border-bottom:1px solid #efede8; display:flex; gap:10px; align-items:flex-start; }
+    .task:last-child { border-bottom:0; }
+    .check { width:19px; height:19px; border-radius:50%; border:1.5px solid #bdc8c2; flex:0 0 auto; margin-top:1px; background:#fff; }
+    .check.done { background:var(--moss); border-color:var(--moss); color:#fff; display:grid; place-items:center; font-size:10px; }
+    .task strong { font-size:12px; display:block; }
+    .task span { font-size:11px; color:var(--muted); display:block; margin-top:1px; }
+    .mini-progress { height:5px; background:#eef0eb; border-radius:99px; margin:15px 0 7px; overflow:hidden; }
+    .mini-progress div { height:100%; background:var(--moss); border-radius:inherit; width:72%; }
+    .completion { display:flex; justify-content:space-between; color:var(--muted); font-size:11px; }
+
+    .ai-layout { display:grid; grid-template-columns: minmax(0, 1fr) 310px; gap:19px; }
+    .ai-hero { min-height:168px; overflow:hidden; position:relative; background:var(--moss); border-radius:var(--radius); padding:24px; color:#fff; display:flex; flex-direction:column; justify-content:flex-end; }
+    .ai-hero::before, .ai-hero::after { content:""; position:absolute; border-radius:50%; border:1px solid rgba(255,255,255,.25); }
+    .ai-hero::before { width:210px; height:210px; right:-45px; top:-81px; }
+    .ai-hero::after { width:125px; height:125px; right:48px; top:-52px; border-color:rgba(243,191,96,.8); }
+    .ai-hero > * { position:relative; z-index:1; }
+    .ai-hero .eyebrow { color:#c0dccd; font-size:11px; letter-spacing:.1em; font-weight:700; text-transform:uppercase; }
+    .ai-hero h1 { font-size:30px; max-width:500px; margin-top:7px; }
+    .ai-hero p { margin:7px 0 0; color:#d7e5dd; max-width:570px; }
+    .wizard { margin-top:18px; }
+    .steps { display:flex; align-items:center; gap:4px; margin-bottom:20px; }
+    .step { display:flex; align-items:center; gap:7px; color:var(--muted); font-size:11px; font-weight:650; }
+    .step:not(:last-child)::after { content:""; height:1px; width:40px; background:var(--line); margin-left:4px; }
+    .step-num { width:21px; height:21px; display:grid; place-items:center; border:1px solid var(--line); border-radius:50%; font-size:10px; }
+    .step.active { color:var(--moss); }
+    .step.active .step-num { color:#fff; background:var(--moss); border-color:var(--moss); }
+    .upload-zone { border:1.5px dashed #b3c8bd; background:#fbfdfb; border-radius:14px; min-height:172px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:22px; }
+    .upload-symbol { width:44px; height:44px; border-radius:50%; background:var(--mint); color:var(--moss); display:grid; place-items:center; font-size:21px; margin-bottom:9px; }
+    .upload-zone strong { font-size:13px; }
+    .upload-zone span { display:block; color:var(--muted); font-size:11px; margin:3px 0 12px; }
+    .upload-zone input { display:none; }
+    .preview-area { display:none; grid-template-columns:126px 1fr; gap:16px; align-items:center; border:1px solid var(--line); padding:12px; border-radius:14px; background:#fbfcfa; }
+    .preview-area.show { display:grid; }
+    .preview-art { width:126px; height:116px; border-radius:10px; background:linear-gradient(135deg,#b94e37,#e5b96e 44%,#286554); position:relative; overflow:hidden; }
+    .preview-art::after { content:""; position:absolute; inset:0; background:repeating-linear-gradient(55deg,transparent 0 7px,rgba(255,248,217,.65) 7px 8px,transparent 8px 15px); }
+    .preview-copy strong { display:block; font-size:13px; }
+    .preview-copy span { color:var(--muted); font-size:11px; }
+    .chips { display:flex; gap:6px; flex-wrap:wrap; margin-top:9px; }
+    .chip { font-size:10px; padding:4px 7px; border-radius:99px; background:var(--sand); color:#7d6131; font-weight:650; }
+    .ai-action-row { display:flex; justify-content:flex-end; gap:9px; margin-top:15px; }
+    .assistant-card { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:18px; height:max-content; }
+    .assistant-icon { width:34px; height:34px; display:grid; place-items:center; border-radius:10px; background:var(--mint); color:var(--moss); font-size:17px; }
+    .assistant-card h2 { margin-top:12px; }
+    .assistant-card > p { color:var(--muted); font-size:12px; margin:6px 0 16px; }
+    .suggestion { border-top:1px solid var(--line); padding:11px 0; display:flex; gap:9px; align-items:flex-start; }
+    .suggestion:last-of-type { border-bottom:1px solid var(--line); }
+    .suggestion b { color:var(--moss); font-size:14px; line-height:1; }
+    .suggestion strong { display:block; font-size:12px; }
+    .suggestion span { display:block; color:var(--muted); font-size:10px; margin-top:1px; }
+    .ai-thinking { display:none; margin-top:15px; color:var(--moss); background:#eff8f1; border-radius:10px; padding:10px; font-size:12px; }
+    .ai-thinking.show { display:block; }
+    .dot { display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--moss); animation:pulse 1.2s infinite; vertical-align:middle; margin-right:5px; }
+    @keyframes pulse { 50%{opacity:.25; transform:scale(.75)} }
+
+    .voice-note { display:flex; align-items:center; gap:9px; color:#49675d; background:#eef6ef; border:1px solid #d6e6d9; border-radius:12px; padding:10px 12px; margin-bottom:15px; font-size:11px; }
+    .voice-note b { display:grid; place-items:center; width:22px; height:22px; border-radius:50%; background:var(--moss); color:#fff; font-size:12px; flex:0 0 auto; }
+    .language-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-bottom:15px; }
+    .language-button { background:#fff; border:1px solid var(--line); border-radius:11px; padding:9px 8px; color:var(--ink); text-align:left; min-width:0; transition:.18s ease; }
+    .language-button:hover { border-color:#9ab9aa; transform:translateY(-1px); }
+    .language-button.active { color:var(--moss); border-color:var(--moss); background:#f1f8f3; box-shadow:inset 0 0 0 1px #c9dfcf; }
+    .language-button strong { display:block; font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .language-button span { display:block; color:var(--muted); font-size:10px; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .language-button.active span { color:#52796b; }
+    .voice-composer { padding:14px; border:1px solid var(--line); background:#fcfdfa; border-radius:14px; display:grid; grid-template-columns:48px minmax(0,1fr); gap:12px; align-items:center; }
+    .voice-orb { width:48px; height:48px; display:grid; place-items:center; border:0; border-radius:50%; background:var(--moss); color:#fff; font-size:22px; box-shadow:0 5px 14px rgba(31,93,78,.2); }
+    .voice-orb.listening { animation:listen 1.05s ease-in-out infinite; }
+    @keyframes listen { 50% { box-shadow:0 0 0 8px rgba(31,93,78,.13); transform:scale(.96); } }
+    .voice-composer .voice-label { font-size:10px; color:var(--moss); font-weight:750; letter-spacing:.08em; text-transform:uppercase; }
+    .voice-transcript { font-weight:600; font-size:12px; margin:3px 0 8px; min-height:18px; }
+    .voice-actions { display:flex; flex-wrap:wrap; gap:7px; }
+    .small-action { background:#fff; color:var(--moss); border:1px solid #cbded0; border-radius:7px; padding:5px 7px; font-size:10px; font-weight:700; }
+    .small-action:hover { background:var(--mint); }
+    .route-pills { display:flex; flex-wrap:wrap; gap:6px; margin:14px 0 0; }
+    .route-pill { font-size:10px; color:#547167; padding:5px 7px; border-radius:99px; background:#eff3ec; }
+    .route-pill b { color:var(--moss); }
+    .mode-divider { color:var(--muted); text-align:center; font-size:11px; margin:15px 0 9px; display:flex; gap:9px; align-items:center; }
+    .mode-divider::before,.mode-divider::after { content:""; height:1px; background:var(--line); flex:1; }
+    .price-proof { display:none; grid-template-columns:1fr auto; gap:11px; align-items:center; padding:11px; border-radius:12px; background:#fff8e8; margin-top:13px; }
+    .price-proof.show { display:grid; }
+    .price-proof strong { display:block; font-size:12px; }.price-proof span { color:#776333; font-size:10px; display:block; margin-top:2px; }
+    .price-proof b { color:#8d6721; font-size:16px; }
+
+    .catalog-toolbar { display:flex; align-items:center; justify-content:space-between; margin:0 0 17px; gap:10px; }
+    .filter-tabs { display:flex; gap:5px; padding:4px; background:#e7e7e0; border-radius:9px; }
+    .filter-tabs button { padding:6px 10px; font-size:11px; border:0; background:transparent; border-radius:6px; color:var(--muted); font-weight:600; }
+    .filter-tabs button.active { background:#fff; color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.06); }
+    .catalog-grid { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; }
+    .catalog-card { overflow:hidden; background:var(--card); border:1px solid var(--line); border-radius:14px; transition:transform .2s, box-shadow .2s; }
+    .catalog-card:hover { transform:translateY(-2px); box-shadow:var(--shadow); }
+    .catalog-card .art { width:100%; height:155px; border-radius:0; }
+    .catalog-card .card-copy { padding:13px; }
+    .catalog-card h3 { font-size:13px; }
+    .catalog-card p { margin:4px 0 8px; color:var(--muted); font-size:11px; }
+    .catalog-card .bottom { display:flex; justify-content:space-between; align-items:center; }
+    .price { font-weight:700; font-size:12px; }
+    .add-card { border:1.5px dashed #b9cbbf; background:#fbfdfb; border-radius:14px; min-height:247px; display:grid; place-items:center; text-align:center; color:var(--moss); padding:15px; }
+    .add-card .plus { width:38px; height:38px; display:grid; place-items:center; border-radius:50%; background:var(--mint); margin:auto auto 9px; font-size:19px; }
+    .add-card span { color:var(--muted); display:block; font-size:11px; margin-top:3px; }
+
+    .market-layout { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:19px; }
+    .market-intro { padding:23px; background:linear-gradient(120deg,#fff 20%,#f1eee1); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; position:relative; }
+    .market-intro::after { content:""; position:absolute; right:-55px; bottom:-75px; width:215px; height:215px; border-radius:50%; background:var(--mint); opacity:.72; }
+    .market-intro > * { position:relative; z-index:1; }
+    .market-intro .eyebrow { color:var(--terracotta); font-size:10px; font-weight:750; letter-spacing:.1em; text-transform:uppercase; }
+    .market-intro h1 { font-size:31px; max-width:570px; margin-top:6px; }
+    .market-intro p { color:var(--muted); max-width:500px; margin:9px 0 15px; }
+    .channel-line { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:15px; }
+    .channel-line span { color:#406a58; background:#e6f0e8; padding:5px 7px; border-radius:99px; font-size:10px; font-weight:700; }
+    .market-toggle { display:flex; background:#e8e7df; border-radius:9px; padding:4px; width:max-content; }
+    .market-toggle button { border:0; padding:6px 10px; background:transparent; color:var(--muted); font-size:11px; font-weight:650; border-radius:6px; }
+    .market-toggle button.active { background:#fff; color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.05); }
+    .lead-list { display:grid; gap:10px; margin-top:17px; }
+    .lead { padding:14px; border:1px solid var(--line); border-radius:14px; background:var(--card); display:grid; grid-template-columns:44px minmax(0,1fr) auto; gap:11px; align-items:center; }
+    .buyer-logo { width:44px; height:44px; border-radius:11px; display:grid; place-items:center; font-weight:750; font-size:12px; color:#fff; }
+    .buyer-logo.nest { background:#476a59; } .buyer-logo.loom { background:#a45942; } .buyer-logo.made { background:#bd8a39; }
+    .lead h3 { font-size:13px; }
+    .lead p { color:var(--muted); font-size:11px; margin:2px 0 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .lead-score { text-align:right; }
+    .lead-score strong { display:block; color:var(--moss); font-size:13px; }
+    .lead-score span { color:var(--muted); font-size:10px; }
+    .lead-score button { border:0; color:var(--moss); background:transparent; padding:2px 0 0; font-size:11px; font-weight:700; }
+    .insight-panel { background:#28493f; border-radius:var(--radius); padding:19px; color:#fff; }
+    .insight-panel h2 { font-size:17px; }
+    .insight-panel p { color:#c6d8ce; font-size:12px; margin:6px 0 17px; }
+    .demand-chart { height:130px; display:flex; align-items:flex-end; gap:10px; padding:9px 2px 0; border-bottom:1px solid rgba(255,255,255,.22); }
+    .bar-wrap { display:grid; gap:6px; justify-items:center; flex:1; color:#a9c6b8; font-size:9px; }
+    .bar { width:100%; max-width:24px; border-radius:5px 5px 0 0; background:#84b7a0; }
+    .bar.hot { background:#f2c876; }
+    .trend-note { display:flex; gap:8px; align-items:flex-start; margin-top:16px; }
+    .trend-note i { color:#f2c876; font-style:normal; }
+    .trend-note strong { font-size:11px; display:block; }
+    .trend-note span { display:block; color:#b9d0c3; font-size:10px; margin-top:2px; }
+
+    .orders { max-width:900px; }
+    .orders-summary { padding:20px; margin-bottom:18px; background:#fffdf8; border:1px solid #eadfca; border-radius:var(--radius); display:flex; align-items:center; gap:14px; }
+    .orders-summary b { width:42px; height:42px; border-radius:50%; display:grid; place-items:center; background:var(--sand); color:#a46d2c; font-size:18px; }
+    .orders-summary strong { display:block; font-size:13px; }
+    .orders-summary span { display:block; font-size:11px; color:var(--muted); margin-top:2px; }
+    .order-table { background:#fff; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; }
+    table { width:100%; border-collapse:collapse; text-align:left; }
+    th { color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:.07em; background:#fafaf8; }
+    th, td { padding:13px 16px; border-bottom:1px solid var(--line); }
+    td { font-size:12px; }
+    tbody tr:last-child td { border-bottom:0; }
+    .status { font-size:10px; font-weight:700; padding:4px 7px; border-radius:99px; display:inline-block; }
+    .status.packed { background:#fdf0d4; color:#997331; }.status.shipped { background:#dff0e7; color:#287155; }.status.paid { background:#e9ecfa; color:#5369a0; }
+
+    .toast { position:fixed; z-index:10; right:24px; bottom:24px; background:#243c35; color:#fff; padding:12px 15px; border-radius:11px; box-shadow:0 12px 30px rgba(20,40,31,.2); font-size:12px; transform:translateY(90px); opacity:0; transition:.28s ease; }
+    .toast.show { transform:translateY(0); opacity:1; }
+    .toast b { color:#f1ca7f; }
+    .modal-backdrop { display:none; position:fixed; inset:0; z-index:8; background:rgba(20,32,29,.43); padding:18px; align-items:center; justify-content:center; }
+    .modal-backdrop.show { display:flex; }
+    .modal { width:min(470px,100%); background:#fff; border-radius:20px; padding:22px; box-shadow:0 20px 80px rgba(0,0,0,.2); }
+    .modal .modal-head { display:flex; justify-content:space-between; gap:12px; }
+    .modal .close { border:0; background:#f3f4ef; color:var(--ink); width:29px; height:29px; border-radius:50%; }
+    .modal p { color:var(--muted); font-size:12px; }
+    .modal-match { display:flex; justify-content:space-between; align-items:center; background:#eff7f1; border-radius:12px; padding:12px; margin:16px 0; }
+    .modal-match span { display:block; color:#567369; font-size:11px; }.modal-match strong { font-size:13px; }.modal-match b { color:var(--moss); font-size:18px; }
+    .modal .actions { display:flex; justify-content:flex-end; gap:8px; }
+
+    .trust-layout { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr); gap:19px; }
+    .trace-hero { min-height:218px; background:#163d35; color:#fff; border-radius:var(--radius); padding:23px; overflow:hidden; position:relative; }
+    .trace-hero::before { content:""; position:absolute; width:220px; height:220px; border:28px solid rgba(241,197,111,.2); border-radius:50%; right:-70px; top:-71px; }
+    .trace-hero > * { position:relative; z-index:1; }.trace-hero .eyebrow { color:#edc76d; font-size:10px; letter-spacing:.1em; text-transform:uppercase; font-weight:750; }.trace-hero h1 { font-size:30px; margin-top:7px; max-width:480px; }.trace-hero p { color:#c6d8cf; max-width:505px; font-size:12px; margin:8px 0 17px; }
+    .trace-code { font:600 12px/1 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing:.09em; color:#f5d993; }
+    .trace-panel { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .trace-detail { padding:13px; border:1px solid var(--line); border-radius:13px; background:#fff; }.trace-detail b { color:var(--moss); font-size:16px; display:block; margin-bottom:6px; }.trace-detail strong { display:block; font-size:11px; }.trace-detail span { color:var(--muted); display:block; font-size:10px; margin-top:2px; }
+    .safe-link { margin-top:19px; padding:18px; border:1px solid #c9dfd1; background:#f5faf6; border-radius:var(--radius); display:flex; gap:12px; align-items:flex-start; }.safe-link .shield { color:#fff; background:var(--moss); width:35px; height:35px; border-radius:10px; display:grid; place-items:center; font-size:17px; flex:0 0 auto; }.safe-link h2 { font-size:15px; }.safe-link p { margin:4px 0 0; color:#537369; font-size:11px; }
+
+    @media (max-width: 880px) {
+      .app-shell { grid-template-columns:76px minmax(0,1fr); }
+      .sidebar { padding:20px 9px; align-items:center; }
+      .brand { padding:0; }.brand-name, .workspace, .nav button span:not(.nav-icon), .help-card, .profile > div { display:none; }
+      .nav button { padding:11px; }.nav button .nav-icon { width:auto; }
+      .profile { padding:15px 0 0; }.profile .avatar { display:grid; }
+      .content-grid, .ai-layout, .market-layout, .trust-layout { grid-template-columns:1fr; }
+      .assistant-card { display:grid; grid-template-columns:34px 1fr; column-gap:12px; align-items:start; }.assistant-card h2, .assistant-card>p, .assistant-card .suggestion, .assistant-card .ai-thinking { grid-column:1/-1; }.assistant-card h2 { margin-top:0; }
+      .catalog-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .language-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+      .market-layout .insight-panel { display:none; }
+    }
+    @media (max-width: 590px) {
+      main { padding:18px 14px 30px; }.topbar { margin-bottom:20px; }.language { display:none; }
+      .page-head { align-items:flex-start; flex-direction:column; margin-bottom:18px; }.metrics { grid-template-columns:1fr; margin:18px 0; }.catalog-grid { grid-template-columns:1fr; }.catalog-card .art { height:180px; }
+      .steps { gap:2px; }.step { font-size:9px; }.step:not(:last-child)::after { width:17px; }.step-num { width:18px; height:18px; font-size:9px; }
+      .preview-area.show { grid-template-columns:85px 1fr; }.preview-art { width:85px; height:90px; }.lead { grid-template-columns:40px minmax(0,1fr); }.lead-score { grid-column:2; text-align:left; }.catalog-toolbar { align-items:flex-start; flex-direction:column; }
+      .order-table { overflow-x:auto; } table { min-width:640px; }.orders-summary { align-items:flex-start; }
+      .language-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }.trace-panel { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="brand"><div class="brand-mark">✦</div><div class="brand-name">KalaSetu<small>Craft, connected</small></div></div>
+      <div class="workspace">Your workshop</div>
+      <nav class="nav">
+        <button class="active" data-view="overview"><span class="nav-icon">⌂</span><span>Overview</span></button>
+        <button data-view="catalog"><span class="nav-icon">▦</span><span>My catalog</span></button>
+        <button data-view="studio"><span class="nav-icon">♬</span><span>Voice & AI studio</span></button>
+        <button data-view="market"><span class="nav-icon">⌁</span><span>Market linkage</span></button>
+        <button data-view="trace"><span class="nav-icon">⌘</span><span>Trace & safe link</span></button>
+        <button data-view="orders"><span class="nav-icon">□</span><span>Orders</span></button>
+      </nav>
+      <div class="side-spacer"></div>
+      <div class="help-card"><strong>Need a hand?</strong><span>Our craft success team can help you get market-ready.</span><button type="button" data-toast="Opening a support request…">Talk to an expert</button></div>
+      <div class="profile"><div class="avatar">MS</div><div><strong>Maya Studio</strong><small>Maheshwar, MP</small></div></div>
+    </aside>
+
+    <main>
+      <div class="topbar"><div class="crumb">Maya Studio <span> / </span><strong id="crumb-current">Overview</strong></div><div class="top-actions"><button class="language" type="button" id="top-language" data-view-jump="studio">Voice: English ▾</button><button class="language" type="button" id="install-app">Install app</button><button class="icon-btn" type="button" aria-label="Notifications" data-toast="You have 2 new market matches">♧<i class="notification"></i></button></div></div>
+
+      <section class="view active" id="overview">
+        <div class="page-head"><div><h1>Namaste, Maya.</h1><p class="intro">Your craft is ready to travel further today.</p></div><div class="actions"><button class="secondary-btn" type="button" data-view-jump="market">View matches</button><button class="primary-btn" type="button" data-view-jump="studio">♬ Speak a listing</button></div></div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-label">Catalog readiness</div><div class="metric-data"><strong>72%</strong><span>+12% this week</span></div><div class="metric-caption">5 of 7 listings are market-ready</div></div>
+          <div class="metric"><div class="metric-label">Buyer interest</div><div class="metric-data"><strong>18</strong><span>+6 new</span></div><div class="metric-caption">Qualified views in the last 7 days</div></div>
+          <div class="metric"><div class="metric-label">Potential value</div><div class="metric-data"><strong>₹1.24L</strong><span>Across 4 leads</span></div><div class="metric-caption">Based on active buyer requests</div></div>
+        </div>
+        <div class="content-grid">
+          <div class="panel"><div class="panel-head"><div><h2>Your craft catalog</h2><div class="panel-sub">Keep your strongest pieces discoverable</div></div><button class="text-button" type="button" data-view-jump="catalog">See all</button></div>
+            <div class="product-list">
+              <button class="product-row selected" type="button" data-product="Maheshwari handwoven stole"><span class="art weave"></span><span><span class="product-name">Maheshwari handwoven stole</span><span class="product-meta">Silk-cotton · Natural dyes</span></span><span class="row-status">Ready</span></button>
+              <button class="product-row" type="button" data-product="Dhokra storyteller figurine"><span class="art dhokra"></span><span><span class="product-name">Dhokra storyteller figurine</span><span class="product-meta">Bell metal · Tribal craft</span></span><span class="row-status">Ready</span></button>
+              <button class="product-row" type="button" data-product="Hand-painted terracotta planter"><span class="art ceramic"></span><span><span class="product-name">Hand-painted terracotta planter</span><span class="product-meta">Terracotta · Hand painted</span></span><span class="row-status draft">2 details left</span></button>
+            </div>
+            <div class="match-box"><div class="eyebrow">New opportunity</div><strong>Your Maheshwari stole matches a buyer brief</strong><p>Contemporary Indian textiles for a conscious concept store in Bengaluru.</p><div class="match-score"><div class="score-circle">92%</div><span>Match strength<br><b>₹42,000 potential order</b></span><button class="text-button" type="button" style="margin-left:auto" data-open-match="The Loom Room">Review match</button></div></div>
+          </div>
+          <div class="panel"><div class="panel-head"><div><h2>Next best steps</h2><div class="panel-sub">Small actions that unlock more buyers</div></div></div>
+            <div class="task-list">
+              <div class="task"><div class="check done">✓</div><div><strong>Add product origin</strong><span>Trust detail added to your profile</span></div></div>
+              <div class="task"><div class="check"></div><div><strong>Say planter dimensions</strong><span>Use voice instead of typing details</span></div></div>
+              <div class="task"><div class="check"></div><div><strong>Respond to Loom Room</strong><span>Buyer enquiry expires in 2 days</span></div></div>
+            </div>
+            <div class="mini-progress"><div></div></div><div class="completion"><span>Workshop profile</span><span>72% complete</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="catalog">
+        <div class="page-head"><div><h1>My catalog</h1><p class="intro">A clear, buyer-ready home for every piece you make.</p></div><div class="actions"><button class="primary-btn" type="button" data-view-jump="studio">✦ Add a product</button></div></div>
+        <div class="catalog-toolbar"><div class="filter-tabs" aria-label="Catalog filter"><button class="active" type="button" data-filter="all">All 7</button><button type="button" data-filter="ready">Market ready</button><button type="button" data-filter="draft">Needs details</button></div><button class="secondary-btn" type="button" data-toast="Catalog sorting set to most recently updated">Sort: Recently updated ▾</button></div>
+        <div class="catalog-grid" id="catalog-grid">
+          <article class="catalog-card" data-status="ready"><div class="art weave"></div><div class="card-copy"><h3>Maheshwari handwoven stole</h3><p>Silk-cotton · Natural dyes · 20 in stock</p><div class="bottom"><span class="price">₹2,800</span><span class="row-status">Ready</span></div></div></article>
+          <article class="catalog-card" data-status="ready"><div class="art dhokra"></div><div class="card-copy"><h3>Dhokra storyteller figurine</h3><p>Bell metal · 12 cm · 8 in stock</p><div class="bottom"><span class="price">₹3,600</span><span class="row-status">Ready</span></div></div></article>
+          <article class="catalog-card" data-status="draft"><div class="art ceramic"></div><div class="card-copy"><h3>Hand-painted terracotta planter</h3><p>Terracotta · Hand painted · 15 in stock</p><div class="bottom"><span class="price">₹950</span><span class="row-status draft">2 details left</span></div></div></article>
+          <article class="catalog-card" data-status="ready"><div class="art weave" style="filter:hue-rotate(24deg)"></div><div class="card-copy"><h3>Reversible table runner</h3><p>Handloom cotton · 6 in stock</p><div class="bottom"><span class="price">₹1,900</span><span class="row-status">Ready</span></div></div></article>
+          <article class="catalog-card" data-status="draft"><div class="art dhokra" style="filter:saturate(.75)"></div><div class="card-copy"><h3>Brass diya set</h3><p>Lost wax brass · 10 in stock</p><div class="bottom"><span class="price">₹1,450</span><span class="row-status draft">1 detail left</span></div></div></article>
+          <button class="add-card" type="button" data-view-jump="studio"><div><div class="plus">＋</div><strong>Add your next piece</strong><span>Turn a photo into a listing with AI</span></div></button>
+        </div>
+      </section>
+
+      <section class="view" id="studio">
+        <div class="ai-layout"><div>
+          <div class="ai-hero"><div class="eyebrow">Vani voice + AI catalog</div><h1>Say it in your language. We make it market-ready.</h1><p>One voice note or one workshop photo becomes a complete listing, fair-price range and buyer-ready craft story.</p></div>
+          <div class="panel wizard"><div class="steps"><div class="step active"><span class="step-num">1</span>Choose language</div><div class="step"><span class="step-num">2</span>Speak or photo</div><div class="step"><span class="step-num">3</span>Review listing</div></div>
+            <div class="voice-note"><b>♬</b><span><strong>Voice-first support:</strong> choose one of eight languages. Tap the microphone to add a sample voice note, or hear the same listing read aloud.</span></div>
+            <div class="language-grid" id="language-grid" aria-label="Choose an audio language">
+              <button type="button" class="language-button active" data-language="english" aria-pressed="true"><strong>English</strong><span>English</span></button>
+              <button type="button" class="language-button" data-language="hindi" aria-pressed="false"><strong>Hindi</strong><span>हिन्दी</span></button>
+              <button type="button" class="language-button" data-language="telugu" aria-pressed="false"><strong>Telugu</strong><span>తెలుగు</span></button>
+              <button type="button" class="language-button" data-language="tamil" aria-pressed="false"><strong>Tamil</strong><span>தமிழ்</span></button>
+              <button type="button" class="language-button" data-language="bhojpuri" aria-pressed="false"><strong>Bhojpuri</strong><span>भोजपुरी</span></button>
+              <button type="button" class="language-button" data-language="marathi" aria-pressed="false"><strong>Marathi</strong><span>मराठी</span></button>
+              <button type="button" class="language-button" data-language="bengali" aria-pressed="false"><strong>Bengali</strong><span>বাংলা</span></button>
+              <button type="button" class="language-button" data-language="kannada" aria-pressed="false"><strong>Kannada</strong><span>ಕನ್ನಡ</span></button>
+            </div>
+            <div class="voice-composer"><button class="voice-orb" type="button" id="voice-entry" aria-label="Add a sample voice listing">♬</button><div><div class="voice-label" id="voice-label">Voice listing in English</div><div class="voice-transcript" id="voice-transcript">“This is my handwoven Maheshwari stole. Price is 2,800 rupees.”</div><div class="voice-actions"><button type="button" class="small-action" id="listen-sample">▶ Hear this listing</button><button type="button" class="small-action" id="translate-listing">✦ Turn into listing</button></div></div></div>
+            <div class="route-pills" aria-label="Voice workflow"><span class="route-pill"><b>1</b> Spoken craft detail</span><span class="route-pill"><b>2</b> AI understands & translates</span><span class="route-pill"><b>3</b> Listing + fair price</span></div>
+            <div class="mode-divider">or add one photo</div>
+            <div class="upload-zone" id="upload-zone"><div class="upload-symbol">↥</div><strong>Drop a product photo here</strong><span>No forms required — AI finds material, category and listing details</span><label class="secondary-btn" for="product-photo">Choose photo</label><input id="product-photo" type="file" accept="image/*" /></div>
+            <div class="preview-area" id="preview-area"><div class="preview-art" id="preview-image"></div><div class="preview-copy"><strong id="preview-title">Handwoven textile</strong><span id="preview-info">Image ready for AI analysis</span><div class="chips"><span class="chip">Textile</span><span class="chip">Handmade</span><span class="chip">India</span></div></div></div>
+            <div class="price-proof" id="price-proof"><div><strong>Fair price guidance created</strong><span>Based on material, craft time and buyer demand — you keep control.</span></div><b>₹2,600–₹3,000</b></div>
+            <div class="ai-action-row"><button class="secondary-btn" type="button" id="demo-photo">Use sample photo</button><button class="primary-btn" type="button" id="generate-listing">✦ Create market listing</button></div>
+          </div>
+        </div>
+        <aside class="assistant-card"><div class="assistant-icon">✦</div><h2>What KalaSetu creates</h2><p>Every listing stays understandable for the maker and useful for the buyer.</p>
+          <div class="suggestion"><b>01</b><div><strong>Craft & material details</strong><span>Weave, material, colour and technique</span></div></div>
+          <div class="suggestion"><b>02</b><div><strong>Fair-price proof</strong><span>Suggested range without forcing a price</span></div></div>
+          <div class="suggestion"><b>03</b><div><strong>Trace tag & safe link</strong><span>Origin story, QR trust and buyer control</span></div></div>
+          <div class="ai-thinking" id="ai-thinking"><span class="dot"></span>Finding the details that make this piece stand out…</div>
+        </aside></div>
+      </section>
+
+      <section class="view" id="market">
+        <div class="page-head"><div><h1>Market linkage</h1><p class="intro">Relevant buyer briefs, curated for your craft.</p></div></div>
+        <div class="market-layout"><div><div class="market-intro"><div class="eyebrow">Smart matching</div><h1>Bring the right work to the right buyer.</h1><p>KalaSetu looks beyond keywords: it considers your materials, price point, production capacity and the story behind each craft.</p><div class="channel-line"><span>ONDC-ready</span><span>Direct B2B leads</span><span>Shared-hub friendly</span><span>No middleman cut</span></div><div class="market-toggle"><button class="active" type="button" data-market-filter="all">Best matches</button><button type="button" data-market-filter="textile">Textiles</button><button type="button" data-market-filter="home">Home & living</button></div></div>
+          <div class="lead-list" id="lead-list">
+            <article class="lead" data-kind="textile"><div class="buyer-logo loom">LL</div><div><h3>The Loom Room</h3><p>Contemporary Indian textiles · Bengaluru · 20–30 units</p></div><div class="lead-score"><strong>92% match</strong><span>₹42,000 potential</span><button type="button" data-open-match="The Loom Room">View brief →</button></div></article>
+            <article class="lead" data-kind="home"><div class="buyer-logo nest">N</div><div><h3>Nest & Nook</h3><p>Handcrafted home accents · Mumbai · 50–80 units</p></div><div class="lead-score"><strong>87% match</strong><span>₹58,000 potential</span><button type="button" data-open-match="Nest & Nook">View brief →</button></div></article>
+            <article class="lead" data-kind="textile"><div class="buyer-logo made">M</div><div><h3>Made in India Co.</h3><p>Gifting collection · Online · 40–60 units</p></div><div class="lead-score"><strong>81% match</strong><span>₹24,000 potential</span><button type="button" data-open-match="Made in India Co.">View brief →</button></div></article>
+          </div>
+        </div><aside class="insight-panel"><h2>Demand pulse</h2><p>Buyer saves for natural-dye textiles in the last 6 weeks.</p><div class="demand-chart" aria-label="Growing weekly demand"><div class="bar-wrap"><div class="bar" style="height:35%"></div><span>Jul</span></div><div class="bar-wrap"><div class="bar" style="height:47%"></div><span>Aug</span></div><div class="bar-wrap"><div class="bar" style="height:54%"></div><span>Sep</span></div><div class="bar-wrap"><div class="bar" style="height:66%"></div><span>Oct</span></div><div class="bar-wrap"><div class="bar hot" style="height:93%"></div><span>Now</span></div></div><div class="trend-note"><i>↗</i><div><strong>Demand is up 34%</strong><span>Stories about natural dyes are converting especially well.</span></div></div></aside></div>
+      </section>
+
+      <section class="view" id="trace">
+        <div class="page-head"><div><h1>Trace & safe link</h1><p class="intro">Give every buyer a clear, verified path back to the maker.</p></div><div class="actions"><button class="secondary-btn" type="button" data-toast="Trace tag copied for sharing">Copy trace link</button></div></div>
+        <div class="trust-layout"><div>
+          <div class="trace-hero"><div class="eyebrow">Trace tag for your selected product</div><h1>Maheshwari handwoven stole</h1><p>A buyer can scan one code to understand the maker, material, origin and care of this piece — without exposing your private details.</p><div class="trace-code">KSETU · MHW · 02581 · VERIFIED</div></div>
+          <div class="safe-link"><div class="shield">⌘</div><div><h2>Safe direct connection</h2><p>Buyer requests are shown clearly before you respond. Trace records, transparent pricing and privacy controls help protect against unknown links and scams.</p></div></div>
+        </div>
+        <div class="trace-panel"><article class="trace-detail"><b>⌖</b><strong>Made in</strong><span>Maheshwar, Madhya Pradesh</span></article><article class="trace-detail"><b>◌</b><strong>Craft process</strong><span>Handwoven silk-cotton · natural dyes</span></article><article class="trace-detail"><b>✦</b><strong>Maker story</strong><span>Maya Studio · 18 years of handloom practice</span></article><article class="trace-detail"><b>✓</b><strong>Buyer-safe record</strong><span>Product data checked before a link is shared</span></article></div>
+      </section>
+
+      <section class="view orders" id="orders">
+        <div class="page-head"><div><h1>Orders</h1><p class="intro">Keep every buyer promise moving smoothly.</p></div><div class="actions"><button class="secondary-btn" type="button" data-toast="Order report downloaded (preview)">Download report</button></div></div>
+        <div class="orders-summary"><b>⌁</b><div><strong>One order needs your attention</strong><span>Pack the Made in India Co. gifting order by Friday to stay on track.</span></div><button class="text-button" type="button" data-toast="Opening packing checklist…" style="margin-left:auto">View checklist</button></div>
+        <div class="order-table"><table><thead><tr><th>Order</th><th>Buyer</th><th>Items</th><th>Value</th><th>Status</th></tr></thead><tbody><tr><td><strong>#KS-1038</strong><br><span style="color:var(--muted);font-size:10px">Due 04 Sep</span></td><td>Made in India Co.</td><td>24 stoles</td><td>₹67,200</td><td><span class="status packed">Ready to pack</span></td></tr><tr><td><strong>#KS-1035</strong><br><span style="color:var(--muted);font-size:10px">Due 30 Aug</span></td><td>Nest & Nook</td><td>8 planters</td><td>₹7,600</td><td><span class="status shipped">Shipped</span></td></tr><tr><td><strong>#KS-1029</strong><br><span style="color:var(--muted);font-size:10px">Complete</span></td><td>Earthful Studio</td><td>6 figurines</td><td>₹21,600</td><td><span class="status paid">Paid</span></td></tr></tbody></table></div>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <audio id="language-audio" preload="metadata"></audio>
+  <div class="modal-backdrop" id="match-modal" role="dialog" aria-modal="true" aria-labelledby="match-title"><div class="modal"><div class="modal-head"><div><h2 id="match-title">A strong craft match</h2><p id="match-description">This brief looks promising for your Maheshwari stole.</p></div><button class="close" type="button" id="close-modal" aria-label="Close">×</button></div><div class="modal-match"><div><span>Match strength</span><strong id="modal-buyer">The Loom Room</strong></div><b>92%</b></div><p>Why it fits: your natural-dye textile, story-rich product information and available quantity all line up with this buyer’s brief.</p><div class="actions"><button class="secondary-btn" type="button" id="close-modal-2">Maybe later</button><button class="primary-btn" type="button" id="respond-match">Respond to buyer</button></div></div></div>
+  <div class="modal-backdrop" id="install-modal" role="dialog" aria-modal="true" aria-labelledby="install-title">
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <h2 id="install-title">Download & Install KalaSetu AI</h2>
+          <p>Readily installable on both Phone & Desktop</p>
+        </div>
+        <button class="close" type="button" id="close-install-modal" aria-label="Close">×</button>
+      </div>
+      <div style="margin:16px 0; display:grid; gap:12px;">
+        <div style="padding:13px; border:1px solid var(--line); border-radius:12px; background:#fbfdfb;">
+          <strong style="color:var(--moss); font-size:13px;">📱 For Phone (Android & iPhone)</strong>
+          <span style="font-size:11.5px; color:var(--muted); display:block; margin-top:5px; line-height:1.45;">
+            • <b>Android:</b> Tap browser menu (⋮) → <b>Install app</b> or <b>Add to Home Screen</b>.<br>
+            • <b>iPhone/iPad:</b> In Safari, tap Share (⎋) → <b>Add to Home Screen</b>.<br>
+            • <b>Wi-Fi Connect:</b> Run <code>Run-KalaSetu-Server.bat</code> on your PC to scan a QR code with your phone.
+          </span>
+        </div>
+        <div style="padding:13px; border:1px solid var(--line); border-radius:12px; background:#fbfdfb;">
+          <strong style="color:var(--moss); font-size:13px;">💻 For Desktop (Windows & Mac)</strong>
+          <span style="font-size:11.5px; color:var(--muted); display:block; margin-top:5px; line-height:1.45;">
+            • Double-click <b>Install-KalaSetu-Desktop.bat</b> in the project folder to create a 1-click desktop app shortcut on your Windows Desktop.<br>
+            • Or click the <b>Install</b> icon (⊕) on the right side of your browser address bar.
+          </span>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="primary-btn" type="button" id="close-install-modal-2">Got it</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const viewTitles = { overview: 'Overview', catalog: 'My catalog', studio: 'Voice & AI studio', market: 'Market linkage', trace: 'Trace & safe link', orders: 'Orders' };
+    const toast = document.getElementById('toast');
+    let toastTimer;
+    function showToast(message) {
+      toast.innerHTML = '<b>✓</b> ' + message;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2900);
+    }
+    function showView(target) {
+      document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === target));
+      document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('active', b.dataset.view === target));
+      document.getElementById('crumb-current').textContent = viewTitles[target];
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    document.querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', () => showView(button.dataset.view)));
+    document.querySelectorAll('[data-view-jump]').forEach(button => button.addEventListener('click', () => showView(button.dataset.viewJump)));
+    document.querySelectorAll('[data-toast]').forEach(button => button.addEventListener('click', () => showToast(button.dataset.toast)));
+
+    const languageProfiles = {
+      english: { name: 'English', native: 'English', code: 'en-IN', sample: 'This is my handwoven Maheshwari stole. Price is 2,800 rupees.' },
+      hindi: { name: 'Hindi', native: 'हिन्दी', code: 'hi-IN', sample: 'मेरा हाथ से बुना महेश्वरी स्टोल है। इसका दाम 2,800 रुपये है।' },
+      telugu: { name: 'Telugu', native: 'తెలుగు', code: 'te-IN', sample: 'ఇది నా చేతితో నేసిన మహేశ్వరి స్టోల్. దీని ధర 2,800 రూపాయలు.' },
+      tamil: { name: 'Tamil', native: 'தமிழ்', code: 'ta-IN', sample: 'இது என் கையால் நெய்யப்பட்ட மகேஸ்வரி ஸ்டோல். இதன் விலை 2,800 ரூபாய்.' },
+      bhojpuri: { name: 'Bhojpuri', native: 'भोजपुरी', code: 'bho-IN', sample: 'ई हमार हाथ से बुना महेश्वरी स्टोल बा। एकर दाम 2,800 रुपया बा।' },
+      marathi: { name: 'Marathi', native: 'मराठी', code: 'mr-IN', sample: 'हा माझा हाताने विणलेला महेश्वरी स्टोल आहे. याची किंमत 2,800 रुपये आहे.' },
+      bengali: { name: 'Bengali', native: 'বাংলা', code: 'bn-IN', sample: 'এটি আমার হাতে বোনা মহেশ্বরী স্টোল। এর দাম ২,৮০০ টাকা।' },
+      kannada: { name: 'Kannada', native: 'ಕನ್ನಡ', code: 'kn-IN', sample: 'ಇದು ನನ್ನ ಕೈಯಿಂದ ನೇಯ್ದ ಮಹೇಶ್ವರಿ ಸ್ಟೋಲ್. ಇದರ ಬೆಲೆ 2,800 ರೂಪಾಯಿ.' }
+    };
+    let activeLanguage = 'english';
+    const voiceLabel = document.getElementById('voice-label');
+    const voiceTranscript = document.getElementById('voice-transcript');
+    const topLanguage = document.getElementById('top-language');
+    function applyLanguage(key) {
+      activeLanguage = key;
+      const language = languageProfiles[key];
+      document.documentElement.lang = language.code;
+      voiceLabel.textContent = 'Voice listing in ' + language.name;
+      voiceTranscript.textContent = '“' + language.sample + '”';
+      topLanguage.textContent = 'Voice: ' + language.name + ' ▾';
+      document.querySelectorAll('.language-button').forEach(button => {
+        const isActive = button.dataset.language === key;
+        button.classList.toggle('active', isActive);
+        button.setAttribute('aria-pressed', String(isActive));
+      });
+    }
+    const languageAudio = document.getElementById('language-audio');
+    function speakActiveListing() {
+      const language = languageProfiles[activeLanguage];
+      languageAudio.pause();
+      languageAudio.currentTime = 0;
+      languageAudio.src = 'audio/' + activeLanguage + '.mp3';
+      languageAudio.play().then(() => showToast('Playing the ' + language.name + ' voice sample')).catch(() => showToast('Audio could not start — please open the prototype from its output folder'));
+    }
+    document.querySelectorAll('.language-button').forEach(button => button.addEventListener('click', () => applyLanguage(button.dataset.language)));
+    document.getElementById('listen-sample').addEventListener('click', speakActiveListing);
+    document.getElementById('voice-entry').addEventListener('click', () => {
+      const button = document.getElementById('voice-entry');
+      button.classList.add('listening');
+      voiceTranscript.textContent = 'Listening for your ' + languageProfiles[activeLanguage].name + ' craft details…';
+      setTimeout(() => { button.classList.remove('listening'); voiceTranscript.textContent = '“' + languageProfiles[activeLanguage].sample + '”'; showToast('Voice note understood — ready to make a listing'); }, 1050);
+    });
+    document.getElementById('translate-listing').addEventListener('click', () => {
+      document.getElementById('price-proof').classList.add('show');
+      showToast('Voice note translated into a buyer-ready listing');
+    });
+
+    document.querySelectorAll('.product-row').forEach(row => row.addEventListener('click', () => {
+      document.querySelectorAll('.product-row').forEach(r => r.classList.remove('selected'));
+      row.classList.add('selected');
+      showToast(row.dataset.product + ' selected');
+    }));
+
+    const modal = document.getElementById('match-modal');
+    const modalBuyer = document.getElementById('modal-buyer');
+    const modalDesc = document.getElementById('match-description');
+    function openMatch(name) { modalBuyer.textContent = name; modalDesc.textContent = 'This brief looks promising for your Maheshwari stole.'; modal.classList.add('show'); }
+    function closeMatch() { modal.classList.remove('show'); }
+    document.querySelectorAll('[data-open-match]').forEach(button => button.addEventListener('click', () => openMatch(button.dataset.openMatch)));
+    document.getElementById('close-modal').addEventListener('click', closeMatch);
+    document.getElementById('close-modal-2').addEventListener('click', closeMatch);
+    modal.addEventListener('click', event => { if (event.target === modal) closeMatch(); });
+    document.getElementById('respond-match').addEventListener('click', () => { closeMatch(); showToast('Your introduction to ' + modalBuyer.textContent + ' is ready to review'); });
+
+    document.querySelectorAll('[data-filter]').forEach(tab => tab.addEventListener('click', () => {
+      document.querySelectorAll('[data-filter]').forEach(t => t.classList.toggle('active', t === tab));
+      const filter = tab.dataset.filter;
+      document.querySelectorAll('.catalog-card').forEach(card => { card.style.display = filter === 'all' || card.dataset.status === filter ? '' : 'none'; });
+    }));
+    document.querySelectorAll('[data-market-filter]').forEach(tab => tab.addEventListener('click', () => {
+      document.querySelectorAll('[data-market-filter]').forEach(t => t.classList.toggle('active', t === tab));
+      const filter = tab.dataset.marketFilter;
+      document.querySelectorAll('.lead').forEach(lead => { lead.style.display = filter === 'all' || lead.dataset.kind === filter ? '' : 'none'; });
+    }));
+
+    const uploadZone = document.getElementById('upload-zone');
+    const preview = document.getElementById('preview-area');
+    const photoInput = document.getElementById('product-photo');
+    function previewPhoto(file) {
+      preview.classList.add('show'); uploadZone.style.display = 'none';
+      document.getElementById('preview-title').textContent = file ? file.name.replace(/\.[^/.]+$/, '') : 'Maheshwari silk-cotton stole';
+      document.getElementById('preview-info').textContent = 'Ready for AI analysis · High quality image';
+      if (file && file.type && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = event => { document.getElementById('preview-image').style.backgroundImage = 'url(' + event.target.result + ')'; document.getElementById('preview-image').style.backgroundSize = 'cover'; document.getElementById('preview-image').style.backgroundPosition = 'center'; };
+        reader.readAsDataURL(file);
+      }
+    }
+    photoInput.addEventListener('change', () => { if (photoInput.files[0]) previewPhoto(photoInput.files[0]); });
+    document.getElementById('demo-photo').addEventListener('click', () => previewPhoto(null));
+    uploadZone.addEventListener('dragover', event => { event.preventDefault(); uploadZone.style.borderColor = '#1f5d4e'; });
+    uploadZone.addEventListener('dragleave', () => uploadZone.style.borderColor = '');
+    uploadZone.addEventListener('drop', event => { event.preventDefault(); uploadZone.style.borderColor = ''; const file = event.dataTransfer.files[0]; if (file) previewPhoto(file); });
+    document.getElementById('generate-listing').addEventListener('click', () => {
+      if (!preview.classList.contains('show')) { previewPhoto(null); }
+      const thinking = document.getElementById('ai-thinking'); thinking.classList.add('show');
+      setTimeout(() => { thinking.classList.remove('show'); document.getElementById('price-proof').classList.add('show'); showToast('Listing created: photo, voice story and fair price saved'); showView('catalog'); }, 1500);
+    });
+    let deferredInstallPrompt;
+    window.addEventListener('beforeinstallprompt', event => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      const btn = document.getElementById('install-app');
+      if (btn) btn.textContent = '⬇ Install app';
+    });
+
+    const installModal = document.getElementById('install-modal');
+    function openInstallModal() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        deferredInstallPrompt.userChoice.then(() => { deferredInstallPrompt = undefined; });
+      } else if (installModal) {
+        installModal.classList.add('show');
+      } else {
+        showToast('Use browser menu or desktop installer to install KalaSetu app');
+      }
+    }
+    function closeInstallModal() {
+      if (installModal) installModal.classList.remove('show');
+    }
+    const installBtn = document.getElementById('install-app');
+    if (installBtn) installBtn.addEventListener('click', openInstallModal);
+    const closeInst1 = document.getElementById('close-install-modal');
+    if (closeInst1) closeInst1.addEventListener('click', closeInstallModal);
+    const closeInst2 = document.getElementById('close-install-modal-2');
+    if (closeInst2) closeInst2.addEventListener('click', closeInstallModal);
+    if (installModal) installModal.addEventListener('click', e => { if (e.target === installModal) closeInstallModal(); });
+
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+      window.addEventListener('load', () => navigator.serviceWorker.register('service-worker.js').catch(() => {}));
+    }
+  </script>
+</body>
+</html>
