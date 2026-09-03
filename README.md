@@ -18,13 +18,12 @@ An interactive application demonstrating voice-first craft onboarding, fair-pric
   - **iPhone (Safari):** Tap the Share button → **Add to Home Screen**.
   - KalaSetu AI will be installed directly to your phone's home screen with offline caching and voice audio support!
 
-### 3. 🌐 Free Public Cloud Deployment (Share with Anyone)
-- **10-Second Drag & Drop Hosting:** Visit [Netlify Drop](https://app.netlify.com/drop) and drag-and-drop this `outputs` folder. You will receive an instant public HTTPS link.
-- **GitHub Pages:** Push this folder to a GitHub repo and enable GitHub Pages under repo Settings.
-- **Downloadable Android `.apk`:** Once hosted on HTTPS, paste your URL into [PWABuilder.com](https://www.pwabuilder.com) to generate a signed `.apk` file for direct download.
+### 3. 🌐 ## 🌐 Live Web App & Installation
 
-For full details, see [DEPLOYMENT-GUIDE.md](file:///C:/Users/aadid/Documents/Codex/2026-08-31/kalasetu-ai-smart-cataloging-market-linkage/outputs/DEPLOYMENT-GUIDE.md).
-
+- **Live Application:** [https://mrad11.github.io/kalasetu-ai/](https://mrad11.github.io/kalasetu-ai/)
+- **Android Phone:** Open the live link in Google Chrome → Tap menu (⋮) → **Install app**.
+- **iPhone / iPad:** Open the live link in Safari → Tap Share → **Add to Home Screen**.
+- **Windows / Mac:** Click the **Install** (⊕) icon in your browser address bar.
 ---
 
 ## ✨ Features Included
