@@ -1,6 +1,7 @@
 # Large binaries (GitHub rejects >100MB, warns >50MB)
 cloudflared.exe
 *.exe
+!KalaSetu-AI.exe
 
 # Python bytecode
 __pycache__/
