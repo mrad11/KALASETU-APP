@@ -578,7 +578,7 @@
                 <span id="bhashini-visualizer-text">Bhashini Neural Voice Synthesizer Active…</span>
               </div>
             </div>
-            <div class="voice-composer"><button class="voice-orb" type="button" id="voice-entry" aria-label="Add a sample voice listing">♬</button><div><div class="voice-label" id="voice-label">Voice listing in English</div><div class="voice-transcript" id="voice-transcript">“This is my handwoven Maheshwari stole. Price is 2,800 rupees.”</div><div class="voice-actions"><button type="button" class="small-action" id="listen-sample">▶ Hear this listing</button><button type="button" class="small-action" id="translate-listing">✦ Turn into listing</button></div></div></div>
+            <div class="voice-composer"><button class="voice-orb" type="button" id="voice-entry" aria-label="Add a sample voice listing">♬</button><div><div class="voice-label" id="voice-label">Voice listing in English</div><div class="voice-transcript" id="voice-transcript">“This is my handwoven Maheshwari stole. Price is 2,800 rupees.”</div><audio id="language-audio" preload="auto"></audio><div class="voice-actions"><button type="button" class="small-action" id="listen-sample">▶ Hear this listing</button><button type="button" class="small-action" id="translate-listing">✦ Turn into listing</button></div></div></div>
             <div class="route-pills" aria-label="Voice workflow"><span class="route-pill"><b>1</b> Spoken craft detail</span><span class="route-pill"><b>2</b> AI understands & translates</span><span class="route-pill"><b>3</b> Listing + fair price</span></div>
             <div class="mode-divider">or add one photo</div>
             <div class="upload-zone" id="upload-zone"><div class="upload-symbol">↥</div><strong>Drop a product photo here</strong><span>No forms required — AI finds material, category and listing details</span><label class="secondary-btn" for="product-photo">Choose photo</label><input id="product-photo" type="file" accept="image/*" /></div>
@@ -718,7 +718,90 @@
       }
     }
 
-    function applyLanguage(key) {
+    let currentAudioObj = null;
+
+    function stopAllAudio() {
+      if (currentAudioObj) {
+        try {
+          currentAudioObj.pause();
+          currentAudioObj.currentTime = 0;
+        } catch (e) {}
+        currentAudioObj = null;
+      }
+      if ('speechSynthesis' in window) {
+        try { window.speechSynthesis.cancel(); } catch (e) {}
+      }
+      setBhashiniSpeaking(false, '');
+    }
+
+    function playLanguageAudio(key, userGesture = false) {
+      if (!languageProfiles[key]) return;
+      const language = languageProfiles[key];
+      stopAllAudio();
+      setBhashiniSpeaking(true, language.name);
+
+      const audioSrc = 'audio/' + key + '.mp3';
+      const audio = new Audio(audioSrc);
+      currentAudioObj = audio;
+
+      audio.onended = () => {
+        setBhashiniSpeaking(false, language.name);
+        if (currentAudioObj === audio) currentAudioObj = null;
+      };
+
+      audio.onerror = (e) => {
+        console.warn('Audio playback error for ' + key + ', falling back to TTS:', e);
+        speakWithBhashiniTTS(language);
+      };
+
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          showToast('Playing Bhashini Voice: ' + language.name + ' (' + language.native + ')');
+        }).catch((err) => {
+          console.warn('Audio play prevented:', err);
+          if (userGesture) {
+            speakWithBhashiniTTS(language);
+          } else {
+            setBhashiniSpeaking(false, language.name);
+          }
+        });
+      }
+    }
+
+    function speakWithBhashiniTTS(language) {
+      if ('speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel();
+          const utter = new SpeechSynthesisUtterance(language.sample);
+          utter.lang = language.code;
+          utter.rate = 0.95;
+
+          const voices = window.speechSynthesis.getVoices() || [];
+          const indicVoice = voices.find(v => v.lang === language.code || v.lang.startsWith(language.code.slice(0, 2))) ||
+                             voices.find(v => v.lang === 'hi-IN' || v.lang === 'en-IN');
+          if (indicVoice) utter.voice = indicVoice;
+
+          utter.onstart = () => setBhashiniSpeaking(true, language.name);
+          utter.onend = () => setBhashiniSpeaking(false, language.name);
+          utter.onerror = () => setBhashiniSpeaking(false, language.name);
+
+          window.speechSynthesis.speak(utter);
+          showToast('Bhashini AI TTS: ' + language.name + ' (' + language.native + ')');
+        } catch (ex) {
+          setBhashiniSpeaking(false, language.name);
+        }
+      } else {
+        setBhashiniSpeaking(false, language.name);
+        showToast(language.name + ': ' + language.sample);
+      }
+    }
+
+    function speakActiveListing() {
+      playLanguageAudio(activeLanguage, true);
+    }
+
+    function applyLanguage(key, triggerPlay = true) {
       if (!languageProfiles[key]) return;
       activeLanguage = key;
       const language = languageProfiles[key];
@@ -732,52 +815,8 @@
         button.setAttribute('aria-pressed', String(isActive));
       });
       showToast('Switched to ' + language.name + ' (' + language.native + ') — Bhashini AI Ready');
-    }
-
-    const languageAudio = document.getElementById('language-audio');
-
-    function speakWithBhashiniTTS(language) {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(language.sample);
-        utter.lang = language.code;
-        utter.rate = 0.95;
-        
-        const voices = window.speechSynthesis.getVoices();
-        const indicVoice = voices.find(v => v.lang === language.code || v.lang.startsWith(language.code.slice(0, 2))) ||
-                           voices.find(v => v.lang === 'hi-IN' || v.lang === 'en-IN');
-        if (indicVoice) utter.voice = indicVoice;
-        
-        utter.onstart = () => setBhashiniSpeaking(true, language.name);
-        utter.onend = () => setBhashiniSpeaking(false, language.name);
-        utter.onerror = () => setBhashiniSpeaking(false, language.name);
-        
-        window.speechSynthesis.speak(utter);
-        showToast('Bhashini AI Voice: Speaking ' + language.name + ' (' + language.native + ')');
-      } else {
-        setBhashiniSpeaking(false, language.name);
-        showToast(language.name + ': ' + language.sample);
-      }
-    }
-
-    function speakActiveListing() {
-      const language = languageProfiles[activeLanguage];
-      setBhashiniSpeaking(true, language.name);
-      
-      languageAudio.pause();
-      languageAudio.currentTime = 0;
-      languageAudio.src = 'audio/' + activeLanguage + '.mp3';
-      
-      const playPromise = languageAudio.play();
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          showToast('Playing ' + language.name + ' audio');
-          languageAudio.onended = () => setBhashiniSpeaking(false, language.name);
-        }).catch(() => {
-          speakWithBhashiniTTS(language);
-        });
-      } else {
-        speakWithBhashiniTTS(language);
+      if (triggerPlay) {
+        playLanguageAudio(key, true);
       }
     }
 
