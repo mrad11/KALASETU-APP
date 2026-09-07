@@ -207,6 +207,40 @@
     .voice-composer .voice-label { font-size:10px; color:var(--moss); font-weight:750; letter-spacing:.08em; text-transform:uppercase; }
     .voice-transcript { font-weight:600; font-size:12px; margin:3px 0 8px; min-height:18px; }
     .voice-actions { display:flex; flex-wrap:wrap; gap:7px; }
+    /* Bhashini AI 24-Language Suite */
+    .bhashini-hub { background: #fdfbf7; border: 1px solid #e2ddd3; border-radius: 16px; padding: 14px; margin-bottom: 16px; box-shadow: 0 4px 16px rgba(31,93,78,.05); }
+    .bhashini-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px dashed #ded8cc; }
+    .bhashini-tag { display: inline-flex; align-items: center; gap: 6px; background: #1f5d4e; color: #fff; padding: 5px 11px; border-radius: 99px; font-size: 11px; font-weight: 700; letter-spacing: .03em; box-shadow: 0 2px 6px rgba(31,93,78,.25); }
+    .bhashini-tag-sub { color: #697871; font-size: 11px; font-weight: 600; }
+    .bhashini-controls { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
+    .bhashini-search { flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid #d4cdc1; border-radius: 9px; font-size: 11.5px; background: #fff; color: var(--ink); }
+    .bhashini-search:focus { outline: none; border-color: #1f5d4e; box-shadow: 0 0 0 2px rgba(31,93,78,.15); }
+    .bhashini-filters { display: flex; gap: 5px; flex-wrap: wrap; }
+    .bhashini-filter-btn { border: 1px solid #dcd5c7; background: #fff; border-radius: 8px; padding: 5px 9px; font-size: 10.5px; font-weight: 600; color: #55625c; cursor: pointer; transition: .15s; }
+    .bhashini-filter-btn:hover { border-color: #1f5d4e; color: #1f5d4e; }
+    .bhashini-filter-btn.active { background: #1f5d4e; border-color: #1f5d4e; color: #fff; }
+    .language-grid-container { max-height: 250px; overflow-y: auto; padding-right: 4px; margin-bottom: 8px; }
+    .language-grid-container::-webkit-scrollbar { width: 5px; }
+    .language-grid-container::-webkit-scrollbar-thumb { background: #c8c0b2; border-radius: 4px; }
+    .language-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+    .language-button { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; color: var(--ink); text-align: left; min-width: 0; transition: .18s ease; cursor: pointer; }
+    .language-button:hover { border-color: #9ab9aa; transform: translateY(-1px); }
+    .language-button.active { color: var(--moss); border-color: var(--moss); background: #f1f8f3; box-shadow: inset 0 0 0 1.5px #1f5d4e; }
+    .language-button .lang-native { display: block; font-weight: 700; font-size: 12.5px; color: #1a2d28; line-height: 1.25; }
+    .language-button.active .lang-native { color: #1f5d4e; }
+    .language-button .lang-en { display: block; font-size: 10.5px; color: #5a6b64; font-weight: 500; margin-top: 2px; }
+    .language-button .lang-region { display: block; color: #8c9891; font-size: 9px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bhashini-visualizer { display: none; align-items: center; gap: 9px; background: #183e35; color: #e5f4ee; padding: 8px 14px; border-radius: 9px; margin-top: 10px; font-size: 11px; font-weight: 600; }
+    .bhashini-visualizer.active { display: flex; }
+    .bhashini-bars { display: flex; align-items: center; gap: 3px; height: 14px; }
+    .bhashini-bar { width: 3px; background: #62d8b5; border-radius: 2px; animation: soundWave 0.8s ease-in-out infinite alternate; }
+    .bhashini-bar:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+    .bhashini-bar:nth-child(2) { height: 13px; animation-delay: 0.3s; }
+    .bhashini-bar:nth-child(3) { height: 8px; animation-delay: 0.2s; }
+    .bhashini-bar:nth-child(4) { height: 14px; animation-delay: 0.4s; }
+    .bhashini-bar:nth-child(5) { height: 7px; animation-delay: 0.15s; }
+    @keyframes soundWave { from { height: 3px; } to { height: 14px; } }
+
     .small-action { background:#fff; color:var(--moss); border:1px solid #cbded0; border-radius:7px; padding:5px 7px; font-size:10px; font-weight:700; }
     .small-action:hover { background:var(--mint); }
     .route-pills { display:flex; flex-wrap:wrap; gap:6px; margin:14px 0 0; }
@@ -393,16 +427,156 @@
         <div class="ai-layout"><div>
           <div class="ai-hero"><div class="eyebrow">Vani voice + AI catalog</div><h1>Say it in your language. We make it market-ready.</h1><p>One voice note or one workshop photo becomes a complete listing, fair-price range and buyer-ready craft story.</p></div>
           <div class="panel wizard"><div class="steps"><div class="step active"><span class="step-num">1</span>Choose language</div><div class="step"><span class="step-num">2</span>Speak or photo</div><div class="step"><span class="step-num">3</span>Review listing</div></div>
-            <div class="voice-note"><b>♬</b><span><strong>Voice-first support:</strong> choose one of eight languages. Tap the microphone to add a sample voice note, or hear the same listing read aloud.</span></div>
-            <div class="language-grid" id="language-grid" aria-label="Choose an audio language">
-              <button type="button" class="language-button active" data-language="english" aria-pressed="true"><strong>English</strong><span>English</span></button>
-              <button type="button" class="language-button" data-language="hindi" aria-pressed="false"><strong>Hindi</strong><span>हिन्दी</span></button>
-              <button type="button" class="language-button" data-language="telugu" aria-pressed="false"><strong>Telugu</strong><span>తెలుగు</span></button>
-              <button type="button" class="language-button" data-language="tamil" aria-pressed="false"><strong>Tamil</strong><span>தமிழ்</span></button>
-              <button type="button" class="language-button" data-language="bhojpuri" aria-pressed="false"><strong>Bhojpuri</strong><span>भोजपुरी</span></button>
-              <button type="button" class="language-button" data-language="marathi" aria-pressed="false"><strong>Marathi</strong><span>मराठी</span></button>
-              <button type="button" class="language-button" data-language="bengali" aria-pressed="false"><strong>Bengali</strong><span>বাংলা</span></button>
-              <button type="button" class="language-button" data-language="kannada" aria-pressed="false"><strong>Kannada</strong><span>ಕನ್ನಡ</span></button>
+            <div class="bhashini-hub">
+              <div class="bhashini-header">
+                <div class="bhashini-tag"><span>🇮🇳</span> <strong>Bhashini AI (भाषिणी)</strong> • Indic Voice Engine</div>
+                <span class="bhashini-tag-sub">22 Official Scheduled Languages + English & Bhojpuri (24 Total)</span>
+              </div>
+              <div class="voice-note" style="margin-bottom:12px;"><b>♬</b><span><strong>Bhashini Voice-First AI:</strong> Speak in your native language. Bhashini AI understands 24 regional Indian languages, extracts craft details, and synthesizes voice listings aloud.</span></div>
+              <div class="bhashini-controls">
+                <input type="text" class="bhashini-search" id="lang-search" placeholder="🔍 Search any language (e.g. Gujarati, Odia, Urdu, Tamil, Bengali...)" aria-label="Search language" />
+                <div class="bhashini-filters">
+                  <button type="button" class="bhashini-filter-btn active" data-lang-filter="all">All (24)</button>
+                  <button type="button" class="bhashini-filter-btn" data-lang-filter="north">North (7)</button>
+                  <button type="button" class="bhashini-filter-btn" data-lang-filter="south">South (4)</button>
+                  <button type="button" class="bhashini-filter-btn" data-lang-filter="east">East & NE (8)</button>
+                  <button type="button" class="bhashini-filter-btn" data-lang-filter="west">West (4)</button>
+                </div>
+              </div>
+              <div class="language-grid-container">
+                <div class="language-grid" id="language-grid" aria-label="Choose an audio language">
+              <button type="button" class="language-button" data-language="hindi" data-zone="north" data-name="hindi हिन्दी" aria-pressed="false">
+  <strong class="lang-native">हिन्दी</strong>
+  <span class="lang-en">Hindi</span>
+  <span class="lang-region">Central & North India</span>
+</button>
+              <button type="button" class="language-button" data-language="bhojpuri" data-zone="north" data-name="bhojpuri भोजपुरी" aria-pressed="false">
+  <strong class="lang-native">भोजपुरी</strong>
+  <span class="lang-en">Bhojpuri</span>
+  <span class="lang-region">Bihar & Eastern UP</span>
+</button>
+              <button type="button" class="language-button" data-language="punjabi" data-zone="north" data-name="punjabi ਪੰਜਾਬੀ" aria-pressed="false">
+  <strong class="lang-native">ਪੰਜਾਬੀ</strong>
+  <span class="lang-en">Punjabi</span>
+  <span class="lang-region">Punjab & Chandigarh</span>
+</button>
+              <button type="button" class="language-button" data-language="urdu" data-zone="north" data-name="urdu اردو" aria-pressed="false">
+  <strong class="lang-native">اردو</strong>
+  <span class="lang-en">Urdu</span>
+  <span class="lang-region">Pan-India / Telangana / J&K</span>
+</button>
+              <button type="button" class="language-button" data-language="kashmiri" data-zone="north" data-name="kashmiri کٲشُر" aria-pressed="false">
+  <strong class="lang-native">کٲشُر</strong>
+  <span class="lang-en">Kashmiri</span>
+  <span class="lang-region">Jammu & Kashmir</span>
+</button>
+              <button type="button" class="language-button" data-language="dogri" data-zone="north" data-name="dogri डोगरी" aria-pressed="false">
+  <strong class="lang-native">डोगरी</strong>
+  <span class="lang-en">Dogri</span>
+  <span class="lang-region">Jammu & Himachal</span>
+</button>
+              <button type="button" class="language-button" data-language="sanskrit" data-zone="north" data-name="sanskrit संस्कृतम्" aria-pressed="false">
+  <strong class="lang-native">संस्कृतम्</strong>
+  <span class="lang-en">Sanskrit</span>
+  <span class="lang-region">Pan-India Classical</span>
+</button>
+              <button type="button" class="language-button" data-language="telugu" data-zone="south" data-name="telugu తెలుగు" aria-pressed="false">
+  <strong class="lang-native">తెలుగు</strong>
+  <span class="lang-en">Telugu</span>
+  <span class="lang-region">Andhra & Telangana</span>
+</button>
+              <button type="button" class="language-button" data-language="tamil" data-zone="south" data-name="tamil தமிழ்" aria-pressed="false">
+  <strong class="lang-native">தமிழ்</strong>
+  <span class="lang-en">Tamil</span>
+  <span class="lang-region">Tamil Nadu & Puducherry</span>
+</button>
+              <button type="button" class="language-button" data-language="kannada" data-zone="south" data-name="kannada ಕನ್ನಡ" aria-pressed="false">
+  <strong class="lang-native">ಕನ್ನಡ</strong>
+  <span class="lang-en">Kannada</span>
+  <span class="lang-region">Karnataka</span>
+</button>
+              <button type="button" class="language-button" data-language="malayalam" data-zone="south" data-name="malayalam മലയാളം" aria-pressed="false">
+  <strong class="lang-native">മലയാളം</strong>
+  <span class="lang-en">Malayalam</span>
+  <span class="lang-region">Kerala & Lakshadweep</span>
+</button>
+              <button type="button" class="language-button" data-language="bengali" data-zone="east" data-name="bengali বাংলা" aria-pressed="false">
+  <strong class="lang-native">বাংলা</strong>
+  <span class="lang-en">Bengali</span>
+  <span class="lang-region">West Bengal & Tripura</span>
+</button>
+              <button type="button" class="language-button" data-language="odia" data-zone="east" data-name="odia ଓଡ଼ିଆ" aria-pressed="false">
+  <strong class="lang-native">ଓଡ଼ିଆ</strong>
+  <span class="lang-en">Odia</span>
+  <span class="lang-region">Odisha</span>
+</button>
+              <button type="button" class="language-button" data-language="assamese" data-zone="east" data-name="assamese অসমীয়া" aria-pressed="false">
+  <strong class="lang-native">অসমীয়া</strong>
+  <span class="lang-en">Assamese</span>
+  <span class="lang-region">Assam</span>
+</button>
+              <button type="button" class="language-button" data-language="maithili" data-zone="east" data-name="maithili मैथिली" aria-pressed="false">
+  <strong class="lang-native">मैथिली</strong>
+  <span class="lang-en">Maithili</span>
+  <span class="lang-region">Bihar & Mithila</span>
+</button>
+              <button type="button" class="language-button" data-language="santali" data-zone="east" data-name="santali ᱥᱟᱱᱛᱟᱲᱤ" aria-pressed="false">
+  <strong class="lang-native">ᱥᱟᱱᱛᱟᱲᱤ</strong>
+  <span class="lang-en">Santali</span>
+  <span class="lang-region">Jharkhand & Odisha</span>
+</button>
+              <button type="button" class="language-button" data-language="manipuri" data-zone="east" data-name="manipuri (meitei) মৈতৈলোন্" aria-pressed="false">
+  <strong class="lang-native">মৈতৈলোন্</strong>
+  <span class="lang-en">Manipuri (Meitei)</span>
+  <span class="lang-region">Manipur</span>
+</button>
+              <button type="button" class="language-button" data-language="bodo" data-zone="east" data-name="bodo बर'" aria-pressed="false">
+  <strong class="lang-native">बर'</strong>
+  <span class="lang-en">Bodo</span>
+  <span class="lang-region">Assam & Bodoland</span>
+</button>
+              <button type="button" class="language-button" data-language="nepali" data-zone="east" data-name="nepali नेपाली" aria-pressed="false">
+  <strong class="lang-native">नेपाली</strong>
+  <span class="lang-en">Nepali</span>
+  <span class="lang-region">Sikkim & West Bengal</span>
+</button>
+              <button type="button" class="language-button" data-language="marathi" data-zone="west" data-name="marathi मराठी" aria-pressed="false">
+  <strong class="lang-native">मराठी</strong>
+  <span class="lang-en">Marathi</span>
+  <span class="lang-region">Maharashtra</span>
+</button>
+              <button type="button" class="language-button" data-language="gujarati" data-zone="west" data-name="gujarati ગુજરાતી" aria-pressed="false">
+  <strong class="lang-native">ગુજરાતી</strong>
+  <span class="lang-en">Gujarati</span>
+  <span class="lang-region">Gujarat</span>
+</button>
+              <button type="button" class="language-button" data-language="konkani" data-zone="west" data-name="konkani कोंकणी" aria-pressed="false">
+  <strong class="lang-native">कोंकणी</strong>
+  <span class="lang-en">Konkani</span>
+  <span class="lang-region">Goa & Coastal Karnataka</span>
+</button>
+              <button type="button" class="language-button" data-language="sindhi" data-zone="west" data-name="sindhi سنڌي" aria-pressed="false">
+  <strong class="lang-native">سنڌي</strong>
+  <span class="lang-en">Sindhi</span>
+  <span class="lang-region">Western India</span>
+</button>
+              <button type="button" class="language-button active" data-language="english" data-zone="all" data-name="english english" aria-pressed="true">
+  <strong class="lang-native">English</strong>
+  <span class="lang-en">English</span>
+  <span class="lang-region">Pan-India</span>
+</button>
+                </div>
+              </div>
+              <div class="bhashini-visualizer" id="bhashini-visualizer">
+                <div class="bhashini-bars">
+                  <span class="bhashini-bar"></span>
+                  <span class="bhashini-bar"></span>
+                  <span class="bhashini-bar"></span>
+                  <span class="bhashini-bar"></span>
+                  <span class="bhashini-bar"></span>
+                </div>
+                <span id="bhashini-visualizer-text">Bhashini Neural Voice Synthesizer Active…</span>
+              </div>
             </div>
             <div class="voice-composer"><button class="voice-orb" type="button" id="voice-entry" aria-label="Add a sample voice listing">♬</button><div><div class="voice-label" id="voice-label">Voice listing in English</div><div class="voice-transcript" id="voice-transcript">“This is my handwoven Maheshwari stole. Price is 2,800 rupees.”</div><div class="voice-actions"><button type="button" class="small-action" id="listen-sample">▶ Hear this listing</button><button type="button" class="small-action" id="translate-listing">✦ Turn into listing</button></div></div></div>
             <div class="route-pills" aria-label="Voice workflow"><span class="route-pill"><b>1</b> Spoken craft detail</span><span class="route-pill"><b>2</b> AI understands & translates</span><span class="route-pill"><b>3</b> Listing + fair price</span></div>
@@ -503,24 +677,53 @@
     document.querySelectorAll('[data-toast]').forEach(button => button.addEventListener('click', () => showToast(button.dataset.toast)));
 
     const languageProfiles = {
-      english: { name: 'English', native: 'English', code: 'en-IN', sample: 'This is my handwoven Maheshwari stole. Price is 2,800 rupees.' },
-      hindi: { name: 'Hindi', native: 'हिन्दी', code: 'hi-IN', sample: 'मेरा हाथ से बुना महेश्वरी स्टोल है। इसका दाम 2,800 रुपये है।' },
-      telugu: { name: 'Telugu', native: 'తెలుగు', code: 'te-IN', sample: 'ఇది నా చేతితో నేసిన మహేశ్వరి స్టోల్. దీని ధర 2,800 రూపాయలు.' },
-      tamil: { name: 'Tamil', native: 'தமிழ்', code: 'ta-IN', sample: 'இது என் கையால் நெய்யப்பட்ட மகேஸ்வரி ஸ்டோல். இதன் விலை 2,800 ரூபாய்.' },
-      bhojpuri: { name: 'Bhojpuri', native: 'भोजपुरी', code: 'bho-IN', sample: 'ई हमार हाथ से बुना महेश्वरी स्टोल बा। एकर दाम 2,800 रुपया बा।' },
-      marathi: { name: 'Marathi', native: 'मराठी', code: 'mr-IN', sample: 'हा माझा हाताने विणलेला महेश्वरी स्टोल आहे. याची किंमत 2,800 रुपये आहे.' },
-      bengali: { name: 'Bengali', native: 'বাংলা', code: 'bn-IN', sample: 'এটি আমার হাতে বোনা মহেশ্বরী স্টোল। এর দাম ২,৮০০ টাকা।' },
-      kannada: { name: 'Kannada', native: 'ಕನ್ನಡ', code: 'kn-IN', sample: 'ಇದು ನನ್ನ ಕೈಯಿಂದ ನೇಯ್ದ ಮಹೇಶ್ವರಿ ಸ್ಟೋಲ್. ಇದರ ಬೆಲೆ 2,800 ರೂಪಾಯಿ.' }
+      'hindi': { name: 'Hindi', native: 'हिन्दी', code: 'hi-IN', region: 'Central & North India', sample: 'मेरा हाथ से बुना महेश्वरी स्टोल है। इसका दाम 2,800 रुपये है।' },
+      'bhojpuri': { name: 'Bhojpuri', native: 'भोजपुरी', code: 'bho-IN', region: 'Bihar & Eastern UP', sample: 'ई हमार हाथ से बुना महेश्वरी स्टोल बा। एकर दाम 2,800 रुपया बा।' },
+      'punjabi': { name: 'Punjabi', native: 'ਪੰਜਾਬੀ', code: 'pa-IN', region: 'Punjab & Chandigarh', sample: 'ਇਹ ਮੇਰਾ ਹੱਥ ਨਾਲ ਬੁਣਿਆ ਮਹੇਸ਼ਵਰੀ ਸਟੋਲ ਹੈ। ਇਸਦੀ ਕੀਮਤ 2,800 ਰੁਪਏ ਹੈ।' },
+      'urdu': { name: 'Urdu', native: 'اردو', code: 'ur-IN', region: 'Pan-India / Telangana / J&K', sample: 'یہ میرا ہاتھ سے بُنا ہوا مہیشوری اسٹول ہے۔ اس کی قیمت 2,800 روپے ہے۔' },
+      'kashmiri': { name: 'Kashmiri', native: 'کٲشُر', code: 'ks-IN', region: 'Jammu & Kashmir', sample: 'یہِ چھُ مےٚ پننؠو دٔستو بُنِمُت مہیشوری شال۔ اَمیُک مول چھُ 2,800 رۄپَی۔' },
+      'dogri': { name: 'Dogri', native: 'डोगरी', code: 'doi-IN', region: 'Jammu & Himachal', sample: 'एह् मेरा हत्थे कन्नै बुनेआ माहेश्वरी स्टोल ऐ। इसदी कीमत 2,800 रपे ऐ।' },
+      'sanskrit': { name: 'Sanskrit', native: 'संस्कृतम्', code: 'sa-IN', region: 'Pan-India Classical', sample: 'इदं मम हस्तनिर्मितं माहेश्वरी-उत्तरीयम्। अस्य मूल्यं २,८०० रूप्यकाणि।' },
+      'telugu': { name: 'Telugu', native: 'తెలుగు', code: 'te-IN', region: 'Andhra & Telangana', sample: 'ఇది నా చేతితో నేసిన మహేశ్వరి స్టోల్. దీని ధర 2,800 రూపాయలు.' },
+      'tamil': { name: 'Tamil', native: 'தமிழ்', code: 'ta-IN', region: 'Tamil Nadu & Puducherry', sample: 'இது என் கையால் நெய்யப்பட்ட மகேஸ்வரி ஸ்டோல். இதன் விலை 2,800 ரூபாய்.' },
+      'kannada': { name: 'Kannada', native: 'ಕನ್ನಡ', code: 'kn-IN', region: 'Karnataka', sample: 'ಇದು ನನ್ನ ಕೈಯಿಂದ ನೇಯ್ದ ಮಹೇಶ್ವರಿ ಸ್ಟೋಲ್. ಇದರ ಬೆಲೆ 2,800 ರೂಪಾಯಿ.' },
+      'malayalam': { name: 'Malayalam', native: 'മലയാളം', code: 'ml-IN', region: 'Kerala & Lakshadweep', sample: 'ഇത് ഞാൻ കൈകൊണ്ട് നെയ്ത മഹേശ്വരി സ്റ്റോൾ ആണ്. ഇതിന്റെ വില 2,800 രൂപയാണ്.' },
+      'bengali': { name: 'Bengali', native: 'বাংলা', code: 'bn-IN', region: 'West Bengal & Tripura', sample: 'এটি আমার হাতে বোনা মহেশ্বরী স্টোল। এর দাম ২,৮০০ টাকা।' },
+      'odia': { name: 'Odia', native: 'ଓଡ଼ିଆ', code: 'or-IN', region: 'Odisha', sample: 'ଏହା ମୋର ହାତ ବୁଣା ମହେଶ୍ୱରୀ ଷ୍ଟୋଲ୍। ଏହାର ମୂଲ୍ୟ ୨,୮୦୦ ଟଙ୍କା।' },
+      'assamese': { name: 'Assamese', native: 'অসমীয়া', code: 'as-IN', region: 'Assam', sample: 'এইখন মোৰ হাতেৰে বোৱা মহেশ্বৰী ষ্টল। ইয়াৰ মূল্য ২,৮০০ টকা।' },
+      'maithili': { name: 'Maithili', native: 'मैथिली', code: 'mai-IN', region: 'Bihar & Mithila', sample: 'ई हमर हाथ सँ बनल महेश्वरी शॉल अछि। एकर दाम 2,800 टाका अछि।' },
+      'santali': { name: 'Santali', native: 'ᱥᱟᱱᱛᱟᱲᱤ', code: 'sat-IN', region: 'Jharkhand & Odisha', sample: 'ᱱᱚᱣᱟ ᱫᱚ ᱤᱧᱟᱜ ᱛᱤ ᱛᱮ ᱛᱮᱧ ᱟᱠᱟᱱ ᱢᱟᱦᱮᱥᱣᱟᱨᱤ ᱥᱴᱚᱞ ᱠᱟᱱᱟ᱾ ᱱᱚᱣᱟ ᱨᱮᱱᱟᱜ ᱫᱟᱢ ᱒,᱘᱐᱐ ᱴᱟᱠᱟ ᱠᱟᱱᱟ᱾' },
+      'manipuri': { name: 'Manipuri (Meitei)', native: 'মৈতৈলোন্', code: 'mni-IN', region: 'Manipur', sample: 'মসি ঐগী খুৎনা শাব মহেশ্বরী শোলনি। মসিগী মমাল লুপা ২,৮০০ নি।' },
+      'bodo': { name: 'Bodo', native: 'बर'', code: 'brx-IN', region: 'Assam & Bodoland', sample: 'बेयो आंनि आखायाजों दानाय माहेश्वरी स्टोल। बेनि बेसेना 2,800 रां।' },
+      'nepali': { name: 'Nepali', native: 'नेपाली', code: 'ne-IN', region: 'Sikkim & West Bengal', sample: 'यो मेरो हातले बुनेको महेश्वरी शल हो। यसको मूल्य २,८०० रुपैयाँ हो।' },
+      'marathi': { name: 'Marathi', native: 'मराठी', code: 'mr-IN', region: 'Maharashtra', sample: 'हा माझा हाताने विणलेला महेश्वरी स्टोल आहे. याची किंमत 2,800 रुपये आहे।' },
+      'gujarati': { name: 'Gujarati', native: 'ગુજરાતી', code: 'gu-IN', region: 'Gujarat', sample: 'આ મારી હાથથી વણેલી મહેશ્વરી શાલ છે. તેની કિંમત 2,800 રૂપિયા છે.' },
+      'konkani': { name: 'Konkani', native: 'कोंकणी', code: 'kok-IN', region: 'Goa & Coastal Karnataka', sample: 'हें म्हज्या हातांनी विणिल्लें माहेश्वरी शाल. हाची मोल 2,800 रुपया.' },
+      'sindhi': { name: 'Sindhi', native: 'سنڌي', code: 'sd-IN', region: 'Western India', sample: 'هي منهنجو هٿ سان ٺهيل مهيشوري شال آهي. هن جي قيمت 2,800 رپيا آهي.' },
+      'english': { name: 'English', native: 'English', code: 'en-IN', region: 'Pan-India', sample: 'This is my handwoven Maheshwari stole. Price is 2,800 rupees.' },
     };
     let activeLanguage = 'english';
     const voiceLabel = document.getElementById('voice-label');
     const voiceTranscript = document.getElementById('voice-transcript');
     const topLanguage = document.getElementById('top-language');
+    const bhashiniVisualizer = document.getElementById('bhashini-visualizer');
+    const bhashiniVisualizerText = document.getElementById('bhashini-visualizer-text');
+
+    function setBhashiniSpeaking(isSpeaking, langName) {
+      if (bhashiniVisualizer) {
+        bhashiniVisualizer.classList.toggle('active', isSpeaking);
+        if (isSpeaking && bhashiniVisualizerText) {
+          bhashiniVisualizerText.textContent = 'Bhashini AI Neural Voice: Speaking in ' + langName + '…';
+        }
+      }
+    }
+
     function applyLanguage(key) {
+      if (!languageProfiles[key]) return;
       activeLanguage = key;
       const language = languageProfiles[key];
       document.documentElement.lang = language.code;
-      voiceLabel.textContent = 'Voice listing in ' + language.name;
+      voiceLabel.textContent = 'Voice listing in ' + language.name + ' (' + language.native + ')';
       voiceTranscript.textContent = '“' + language.sample + '”';
       topLanguage.textContent = 'Voice: ' + language.name + ' ▾';
       document.querySelectorAll('.language-button').forEach(button => {
@@ -528,15 +731,79 @@
         button.classList.toggle('active', isActive);
         button.setAttribute('aria-pressed', String(isActive));
       });
+      showToast('Switched to ' + language.name + ' (' + language.native + ') — Bhashini AI Ready');
     }
+
     const languageAudio = document.getElementById('language-audio');
+
+    function speakWithBhashiniTTS(language) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(language.sample);
+        utter.lang = language.code;
+        utter.rate = 0.95;
+        
+        const voices = window.speechSynthesis.getVoices();
+        const indicVoice = voices.find(v => v.lang === language.code || v.lang.startsWith(language.code.slice(0, 2))) ||
+                           voices.find(v => v.lang === 'hi-IN' || v.lang === 'en-IN');
+        if (indicVoice) utter.voice = indicVoice;
+        
+        utter.onstart = () => setBhashiniSpeaking(true, language.name);
+        utter.onend = () => setBhashiniSpeaking(false, language.name);
+        utter.onerror = () => setBhashiniSpeaking(false, language.name);
+        
+        window.speechSynthesis.speak(utter);
+        showToast('Bhashini AI Voice: Speaking ' + language.name + ' (' + language.native + ')');
+      } else {
+        setBhashiniSpeaking(false, language.name);
+        showToast(language.name + ': ' + language.sample);
+      }
+    }
+
     function speakActiveListing() {
       const language = languageProfiles[activeLanguage];
+      setBhashiniSpeaking(true, language.name);
+      
       languageAudio.pause();
       languageAudio.currentTime = 0;
       languageAudio.src = 'audio/' + activeLanguage + '.mp3';
-      languageAudio.play().then(() => showToast('Playing the ' + language.name + ' voice sample')).catch(() => showToast('Audio could not start — please open the prototype from its output folder'));
+      
+      const playPromise = languageAudio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          showToast('Playing ' + language.name + ' audio');
+          languageAudio.onended = () => setBhashiniSpeaking(false, language.name);
+        }).catch(() => {
+          speakWithBhashiniTTS(language);
+        });
+      } else {
+        speakWithBhashiniTTS(language);
+      }
     }
+
+    // Bhashini Language Search & Category Filters
+    const langSearch = document.getElementById('lang-search');
+    if (langSearch) {
+      langSearch.addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase().trim();
+        document.querySelectorAll('.language-button').forEach(btn => {
+          const matches = !q || btn.dataset.name.includes(q) || btn.dataset.language.includes(q);
+          btn.style.display = matches ? 'block' : 'none';
+        });
+      });
+    }
+
+    document.querySelectorAll('[data-lang-filter]').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('[data-lang-filter]').forEach(t => t.classList.toggle('active', t === tab));
+        const zone = tab.dataset.langFilter;
+        document.querySelectorAll('.language-button').forEach(btn => {
+          const matches = zone === 'all' || btn.dataset.zone === zone || btn.dataset.zone === 'all';
+          btn.style.display = matches ? 'block' : 'none';
+        });
+      });
+    });
+
     document.querySelectorAll('.language-button').forEach(button => button.addEventListener('click', () => applyLanguage(button.dataset.language)));
     document.getElementById('listen-sample').addEventListener('click', speakActiveListing);
     document.getElementById('voice-entry').addEventListener('click', () => {
