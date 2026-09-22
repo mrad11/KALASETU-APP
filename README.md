@@ -7,13 +7,13 @@
 [![PoHC Authenticity](https://img.shields.io/badge/AI_PoHC-Micro--Weave_Certified-gold.svg)](./index.html)
 [![PWA Offline Ready](https://img.shields.io/badge/PWA-Offline--Ready-success.svg)](./manifest.webmanifest)
 
-> KalaSetu is India's sovereign, voice-first platform empowering rural artisans. It features conversational onboarding across 25 Indic dialects via Bhashini AI, forensic Proof of Human Craft (PoHC™) computer vision, algorithmic fair-pricing, a tamper-proof Digital Heritage Passport, direct ONDC integration, and an offline-ready, camera-enabled Android app for instant smart cataloging and zero-middleman market linkage.
+> KalaSetu is India's sovereign, voice first platform empowering rural artisans. It features conversational onboarding across 25 Indic dialects via Bhashini AI, forensic Proof of Human Craft (PoHC™) computer vision, algorithmic fair pricing, a tamper proof Digital Heritage Passport, direct ONDC integration, and an offline ready, camera enabled Android app for instant smart cataloging and zero middleman market linkage.
 
 2:05 PM
 
 ---
 
-## 🌐 Live Prototype & Submission Links
+## 🌐 Live Prototype & Links
 
 * 🚀 **Interactive Live Web Prototype:** [https://mrad11.github.io/KALASETU-APP/](https://mrad11.github.io/KALASETU-APP/)
 * 📱 **Android Native Mobile App (APK):** Download [**`KalaSetu.apk`**](./KalaSetu.apk) (Android 14+ compatible, full offline embedded assets, native Camera shutter photo click & PoHC micro-scan integration)
@@ -49,7 +49,7 @@
   * **₹750 (26.8%) — Certified Pure Organic Materials** (Mulberry silk + desi cotton + herbal dye)
   * **₹350 (12.5%) — Heritage Loom & Wooden Tool Care**
   * **₹250 (8.9%) — GI Verification, PoHC Hashing & Eco-Packaging**
-* **Handmade vs. Machine Face-Off Matrix:** Demonstrating 20+ year heirloom lifespan vs 3-month powerloom polyester degradation.
+* **Handmade vs. Machine Face-Off Matrix:** Demonstrating 20+ year heirloom lifespan vs 3 month powerloom polyester degradation.
 
 ### 5.  Royal Digital Heritage Passport (Digital Prapatra)
 * Regal royal certificate with **3D Embossed Crimson & Gold Wax Seal** stamped with `100% GENUINE HANDMADE CRAFT`.
