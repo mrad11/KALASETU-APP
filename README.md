@@ -1,4 +1,4 @@
-# 🪔 KalaSetu — Smart Cataloging & Indic Market Linkage Platform
+#  KalaSetu — Smart Cataloging & Indic Market Linkage Platform
 
 [![SIH 2026 Presentation](https://img.shields.io/badge/SIH_2026-Official_PPT_(PDF)-red?logo=adobeacrobatreader&logoColor=white)](./KalaSetu_SIH2026_Presentation.pdf)
 [![SIH 2026](https://img.shields.io/badge/SIH_2026-Problem_SIH26090-orange.svg)](https://sih.gov.in)
@@ -13,7 +13,6 @@
 
 ---
 
-## 📊 Smart India Hackathon (SIH 2026) Official Presentation
 
 > **Click the banner below to open and view the complete 5-slide SIH 2026 presentation deck (PDF) directly in GitHub's interactive reader or download it:**
 
@@ -62,19 +61,19 @@
 
 ---
 
-## 🌟 The 7 Core Pillars of KalaSetu
+##  The 7 Core Pillars of KalaSetu
 
-### 1. 🎙️ 25-Language Conversational Voice Studio (Bhashini AI)
+### 1.  25-Language Conversational Voice Studio (Bhashini AI)
 * Supports all **22 Official Scheduled Indian Languages** + English, Bhojpuri & Rajasthani dialects.
 * Rural artisans can speak in their native tongue (*e.g. Bundelkhandi, Bhojpuri, Marathi, Odia, Maithili, Santhali*).
 * Neural Speech-to-Text & Gemini multi-modal reasoning converts spoken craft descriptions into market-ready listings with zero manual typing.
 
-### 2. 🛡️ Proof of Human Craft (PoHC™) Forensic Computer Vision
+### 2.  Proof of Human Craft (PoHC™) Forensic Computer Vision
 * **Micro-Weave Structural Scanning:** Forensically detects warp/weft slub variance (±4.2%) to differentiate genuine wooden pit-loom handlooms from deterministic factory powerlooms.
 * **Counterfeit Machine Exposure:** Instantly flags synthetic polyester clones, mechanical needle-punch edge holes, and chemical azo dyes.
 * **100% Genuine Handcrafted Certification:** Issues scientific authenticity telemetry scores (e.g. 99.4% genuine handloom).
 
-### 3. ⏱️ Exact Artisan Labor & Sweat Audit
+### 3.  Exact Artisan Labor & Sweat Audit
 * Scientifically measures and publishes the true human labor behind each masterpiece:
   * **48 Dedicated Manual Weaving Hours** (6 full 8-hour days)
   * **14,400 Hand-Passed Shuttle Picks** manually beaten with wooden sley
@@ -82,7 +81,7 @@
   * **32 Hours Botanical Natural Dye Prep** (Indigo & Madder root)
   * **0.00 kWh Grid Electricity** (100% kinetic human energy — net-zero carbon craft)
 
-### 4. ⚖️ Fair-Price Justification Engine
+### 4.  Fair-Price Justification Engine
 * Transparent waterfall cost breakdown proving why the price (e.g., ₹2,800) is justified:
   * **₹1,450 (51.8%) — Direct Artisan Living Wage** (₹241/day dignity wage ending middleman exploitation)
   * **₹750 (26.8%) — Certified Pure Organic Materials** (Mulberry silk + desi cotton + herbal dye)
@@ -90,16 +89,16 @@
   * **₹250 (8.9%) — GI Verification, PoHC Hashing & Eco-Packaging**
 * **Handmade vs. Machine Face-Off Matrix:** Demonstrating 20+ year heirloom lifespan vs 3-month powerloom polyester degradation.
 
-### 5. 👑 Royal Digital Heritage Passport (Digital Prapatra)
+### 5.  Royal Digital Heritage Passport (Digital Prapatra)
 * Regal royal certificate with **3D Embossed Crimson & Gold Wax Seal** stamped with `100% GENUINE HANDMADE CRAFT`.
 * Double ornate golden filigree border with subtle mandala watermark.
 * Implements **SHA-256 Cryptographic Hash** + **ONDC Scannable QR Code** for instant public ledger verification.
 * 1-Click High-Definition Print & PDF export for physical packaging and luxury export buyers.
 
-### 6. 🔗 Decentralized ONDC Market Linkage
+### 6.  Decentralized ONDC Market Linkage
 * Plugs directly into the Open Network for Digital Commerce (Beckn protocol) to publish artisan catalogs simultaneously across national buyer apps without double-listing or 30% private retail monopoly fees.
 
-### 7. 🔒 Sovereign Security & Attack Defense Architecture
+### 7.  Sovereign Security & Attack Defense Architecture
 * **Secret Key Shielding:** Zero API keys exposed on client; serverless backend orchestration.
 * **SQL/NoSQL Parameterization:** Safeguards artisan bank and order records.
 * **Replay Fraud Defense:** Cryptographic nonces and timestamps on ONDC Beckn transactions.
