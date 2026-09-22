@@ -7,7 +7,9 @@
 [![PoHC Authenticity](https://img.shields.io/badge/AI_PoHC-Micro--Weave_Certified-gold.svg)](./index.html)
 [![PWA Offline Ready](https://img.shields.io/badge/PWA-Offline--Ready-success.svg)](./manifest.webmanifest)
 
-> **KalaSetu** is India's sovereign, voice-first craft onboarding, PoHC™ forensic verification, and ONDC-interoperable market linkage platform for rural artisans and handloom weavers.
+> KalaSetu is India's sovereign, voice-first platform empowering rural artisans. It features conversational onboarding across 25 Indic dialects via Bhashini AI, forensic Proof of Human Craft (PoHC™) computer vision, algorithmic fair-pricing, a tamper-proof Digital Heritage Passport, direct ONDC integration, and an offline-ready, camera-enabled Android app for instant smart cataloging and zero-middleman market linkage.
+
+2:05 PM
 
 ---
 
