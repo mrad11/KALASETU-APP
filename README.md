@@ -56,7 +56,6 @@
 * 📱 **Android Native Mobile App (APK):** Download [**`KalaSetu.apk`**](./KalaSetu.apk) *(Android 14+ compatible, full offline embedded assets, native Camera shutter photo click & PoHC micro-scan integration)*
   * Directly available on Desktop: `C:\Users\aadid\Desktop\KalaSetu.apk`
 * 💻 **Standalone Windows Native App:** Run [`outputs/KalaSetu.exe`](./KalaSetu.exe) *(High-DPI PerMonitorV2 standalone WebView2 application)*
-* ▶️ **Video Walkthrough:** [YouTube Demonstration](https://www.youtube.com/watch?v=vrdVilYzDDY)
 * 📦 **GitHub Source Repository:** [https://github.com/mrad11/KALASETU-APP](https://github.com/mrad11/KALASETU-APP)
 
 ---
