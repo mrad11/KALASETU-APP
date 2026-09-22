@@ -24,9 +24,6 @@
     <img src="https://img.shields.io/badge/📄_Open_Full_Presentation_(PDF)-Click_Here-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white" alt="Open PDF Presentation" />
   </a>
   &nbsp;&nbsp;
-  <a href="https://www.youtube.com/watch?v=vrdVilYzDDY">
-    <img src="https://img.shields.io/badge/▶️_Watch_Pitch_Video-YouTube-darkred?style=for-the-badge&logo=youtube&logoColor=white" alt="Watch Pitch Video" />
-  </a>
 </p>
 
 <details>
