@@ -51,7 +51,7 @@
 
 ## 🌐 Live Prototype & Submission Links
 
-* 📄 **Official SIH 2026 Presentation (PDF):** [**`KalaSetu_SIH2026_Presentation.pdf`**](./KalaSetu_SIH2026_Presentation.pdf) *(Complete 5-slide technical architecture, PoHC forensics, feasibility & impact pitch deck)*
+* 📄 ** Presentation (PDF):** [**`KalaSetu_SIH2026_Presentation.pdf`**](./KalaSetu_SIH2026_Presentation.pdf) *(Complete 5-slide technical architecture, PoHC forensics, feasibility & impact pitch deck)*
 * 🚀 **Interactive Live Web Prototype:** [https://mrad11.github.io/KALASETU-APP/](https://mrad11.github.io/KALASETU-APP/)
 * 📱 **Android Native Mobile App (APK):** Download [**`KalaSetu.apk`**](./KalaSetu.apk) *(Android 14+ compatible, full offline embedded assets, native Camera shutter photo click & PoHC micro-scan integration)*
   * Directly available on Desktop: `C:\Users\aadid\Desktop\KalaSetu.apk`
@@ -115,10 +115,3 @@
 | **Commerce Rails** | ONDC Beckn Protocol, Unified GI Registry Integration |
 | **Security & Crypto** | SHA-256 Heritage Passport Minting, Ephemeral Auth Tokens, CSP Shield |
 
----
-
-## 🏆 Smart India Hackathon (SIH 2026) Submission Details
-* **Problem Statement ID:** SIH26090
-* **Theme:** Heritage & Culture / Innovation for Equality, Empowerment & Inclusion
-* **Team Name:** SPARK CODE6
-* **Team ID:** 118
