@@ -2,6 +2,12 @@
 cloudflared.exe
 *.exe
 !KalaSetu-AI.exe
+!KalaSetu.exe
+
+# Logs and test artifacts
+*.log
+app_debug.log
+TestWebView2Init.*
 
 # Python bytecode
 __pycache__/
